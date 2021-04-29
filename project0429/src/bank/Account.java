@@ -10,19 +10,49 @@ package bank;
 
 */
 public class Account{
-	String bankName="기업은행";
-	String master="배트맨";
+	private String bankName="기업은행";
+	private String master="배트맨";
 	private int balance=5000; //멤버 메서드만 이 변수를 접근할 수 있다..
-	String num="084-45678-01";
+	private String num="084-45678-01";
 
 	//데이터에 대한 직접 접근을 막았으나, 선의의 사용자도 사용하지 못하게 되었으므
 	//로, 선의의 사용자가 접근할 수 있는 어떤 장치를 마련해주자!!!
-	public void setBalance(int balance){
+	public void setBalance(int balance){ //변경용(조작용)  setter
 		this.balance=balance;
 	}
 
 	//값을 반환받아 갈 수 있는 메서드 정의 (return 이 있는 메서드) 
-	public int getBalance(){
+	public int getBalance(){// 가져오기 위한 용도  getter
 		return balance;
 	}
+	
+
+	//데이터는 보호하고, 이 데이터를 사용할 수 있는 메서드를 제공해줘야 개발이 가능 하므로 
+	//이렇게 습관화, 관례화된 메서드 정의 기법을 가리켜 setter, getter 라 한다.. 
+	//setter, getter는 메서드 정의 규칙이 있다... get변수 , set변수
+	//변수의 첫 철자는 대문자로 한다.. 
+	public void setMaster(String master){
+		this.master = master;
+	}
+	public String getMaster(){
+		return master;
+	}
+	
+	//bankName 
+	public void setBankName(String bankName){//변경용(조작용) setter
+		this.bankName = bankName;
+	}
+	public String getBankName(){
+		return bankName;
+	}
+	
+	//num
+	public void setNum(String num){
+		this.num=num;
+	}
+	public String getNum(){
+		return num;
+	}
+	
+
 }
