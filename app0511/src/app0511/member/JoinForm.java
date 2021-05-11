@@ -25,6 +25,7 @@ public class JoinForm extends JFrame{
 	JLabel la_hobby;
 	JPanel p_hobby;
 	JCheckBox[] ch_hobby;
+	JPanel p_mail;
 	JTextField t_mailId;
 	JLabel la_at;
 	Choice ch_server;
@@ -50,6 +51,16 @@ public class JoinForm extends JFrame{
 		ch_hobby[3] = new JCheckBox("여행");
 		ch_hobby[4] = new JCheckBox("명상");
 		
+		p_mail = new JPanel();
+		t_mailId = new JTextField();
+		la_at = new JLabel("@");
+		ch_server = new Choice();
+		
+		ch_server.add("gmail.com");
+		ch_server.add("naver.com");
+		ch_server.add("daum.net");
+		ch_server.add("direct insert");
+		
 		//스타일, 레이아웃 
 		setLayout(new FlowLayout());
 		la_title.setFont( new Font("돋움", Font.BOLD, 24));
@@ -61,6 +72,10 @@ public class JoinForm extends JFrame{
 		la_pass.setPreferredSize(d);
 		t_pass.setPreferredSize(new Dimension(350,30));
 		p_hobby.setPreferredSize(new Dimension(450, 50));
+		
+		t_mailId.setPreferredSize(new Dimension(120, 30));
+		la_at.setPreferredSize(new Dimension(30, 30));
+		ch_server.setPreferredSize(new Dimension(150,30));
 		
 		//조립
 		p_title.add(la_title); //패널에 제목 올려놓기!!
@@ -74,6 +89,12 @@ public class JoinForm extends JFrame{
 			p_hobby.add(ch_hobby[i]);
 		}
 		add(p_hobby);
+		
+		//메일 조립
+		p_mail.add(t_mailId);
+		p_mail.add(la_at);
+		p_mail.add(ch_server);
+		add(p_mail);
 		
 		//보여주기 (화면 중앙으로 오게)
 		setSize(500,500);
