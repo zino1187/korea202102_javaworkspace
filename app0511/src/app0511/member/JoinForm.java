@@ -3,20 +3,22 @@ package app0511.member;
 import java.awt.Checkbox;
 import java.awt.CheckboxGroup;
 import java.awt.Choice;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class JoinForm extends JFrame{
+public class JoinForm extends JFrame implements ActionListener{
 	JPanel p_title;
 	JLabel la_title;
 	JLabel la_id;
@@ -115,11 +117,20 @@ public class JoinForm extends JFrame{
 		add(p_receive); //프레임에 부착
 		add(bt_regist);
 		
+		//이벤트소스와 리스너 연결 
+		bt_regist.addActionListener(this);
+		
 		//보여주기 (화면 중앙으로 오게)
 		setSize(500,500);
 		setLocationRelativeTo(null);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+	public void checkValue() {
+		JOptionPane.showMessageDialog(this, "유효성 체크 시작할께요!!");
+	}
+	public void actionPerformed(ActionEvent e) {
+		checkValue();
 	}
 	
 	public static void main(String[] args) {
