@@ -129,18 +129,36 @@ public class JoinForm extends JFrame implements ActionListener{
 	public void checkValue() {
 		
 		//아이디에 대한 유효성 체크
-		System.out.println("입력한 아이디값의 문자열 길이는 "+t_id.getText().length());
+		//System.out.println("입력한 아이디값의 문자열 길이는 "+t_id.getText().length());
+		//String str = t_pass.getText(); //deprecated 되었으므로, 사용하지 않아야 한다!!!
+		//System.out.println("당신이 입력한 비밀번호는 "+str); //잘 나오지만, 쓰면 안될것임.. 
+		//해결책?? 
+		//char[] pass = t_pass.getPassword(); //char 배열로 데이터 받은 후, 우리가 원하는 형태인 String으로 다시 변환..
+		//char 배열을 String으로 변환해서 쓰자!! 
+		String data = new String(t_pass.getPassword());
+		//System.out.println("당신이 입력한 비밀번호는 "+data);
+		
+		//5개의 체크박스를 대상으로 조사를 실시한다!!!
+		//System.out.println("0번째 체크박스의 상태는 "+ch_hobby[0].isSelected());
+		int count=0;
+		
+		for(int i=0;i<ch_hobby.length;i++) {
+			if(ch_hobby[i].isSelected()) {
+				count++;
+			}
+		}
+		
 		if(t_id.getText().length() ==0) {
 			JOptionPane.showMessageDialog(this, "아이디를 입력하세요!!");
 			t_id.requestFocus();//커서 올려놓기 
+		}else if(data.length() <8) { //8자 이하라면..
+			JOptionPane.showMessageDialog(this, "비밀번호는 8자이상 입력하세요");
+			t_pass.requestFocus();
+		}else if(count<1){
+			JOptionPane.showMessageDialog(this, "적어도 1개 이상의 취미를 선택해주세요");
+		}else {
+			//오라클  DB입력
 		}
-		
-		String str = t_pass.getText();
-		System.out.println("당신이 입력한 비밀번호는 "+str); //잘 나오지만, 쓰면 안될것임.. 
-		//해결책?? 
-		char[] pass = t_pass.getPassword(); //char 배열로 데이터 받은 후, 우리가 원하는 형태인 String으로 다시 변환..
-		
-		
 	}
 	
 	public void actionPerformed(ActionEvent e) {
