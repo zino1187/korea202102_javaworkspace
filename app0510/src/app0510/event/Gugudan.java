@@ -21,7 +21,13 @@ public class Gugudan extends JFrame{
 		add(bt);
 		
 		//버튼과 리스너 연결 
-		bt.addActionListener(new GugudanEvent(t_input));
+		GugudanEvent ge=null;
+		bt.addActionListener(ge=new GugudanEvent(t_input));
+		
+		ge.callMe(3); //call by value
+		ge.callMe("korea"); //call by reference
+		ge.callMe(bt);//call by reference
+		ge.callMe(t_input);//call by reference
 		
 		//보여쥑 
 		setSize(250, 200);
