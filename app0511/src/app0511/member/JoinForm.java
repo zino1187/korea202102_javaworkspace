@@ -127,8 +127,22 @@ public class JoinForm extends JFrame implements ActionListener{
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	public void checkValue() {
-		JOptionPane.showMessageDialog(this, "유효성 체크 시작할께요!!");
+		
+		//아이디에 대한 유효성 체크
+		System.out.println("입력한 아이디값의 문자열 길이는 "+t_id.getText().length());
+		if(t_id.getText().length() ==0) {
+			JOptionPane.showMessageDialog(this, "아이디를 입력하세요!!");
+			t_id.requestFocus();//커서 올려놓기 
+		}
+		
+		String str = t_pass.getText();
+		System.out.println("당신이 입력한 비밀번호는 "+str); //잘 나오지만, 쓰면 안될것임.. 
+		//해결책?? 
+		char[] pass = t_pass.getPassword(); //char 배열로 데이터 받은 후, 우리가 원하는 형태인 String으로 다시 변환..
+		
+		
 	}
+	
 	public void actionPerformed(ActionEvent e) {
 		checkValue();
 	}
