@@ -1,5 +1,6 @@
 package app0511.member;
 
+import java.awt.Checkbox;
 import java.awt.CheckboxGroup;
 import java.awt.Choice;
 import java.awt.Color;
@@ -61,6 +62,13 @@ public class JoinForm extends JFrame{
 		ch_server.add("daum.net");
 		ch_server.add("direct insert");
 		
+		//메일 수신여부 관련 
+		p_receive = new JPanel();
+		la_receive = new JLabel("메일수신");
+		g= new CheckboxGroup(); //체크박스를 그룹으로 묶기 위한 객체!!
+		
+		bt_regist = new JButton("회원가입");
+		
 		//스타일, 레이아웃 
 		setLayout(new FlowLayout());
 		la_title.setFont( new Font("돋움", Font.BOLD, 24));
@@ -76,6 +84,9 @@ public class JoinForm extends JFrame{
 		t_mailId.setPreferredSize(new Dimension(120, 30));
 		la_at.setPreferredSize(new Dimension(30, 30));
 		ch_server.setPreferredSize(new Dimension(150,30));
+		
+		la_receive.setPreferredSize(new Dimension(190,30)); //메일수신 라벨
+		p_receive.setPreferredSize(new Dimension(270,30));
 		
 		//조립
 		p_title.add(la_title); //패널에 제목 올려놓기!!
@@ -95,6 +106,14 @@ public class JoinForm extends JFrame{
 		p_mail.add(la_at);
 		p_mail.add(ch_server);
 		add(p_mail);
+		
+		//메일 수신 조립 
+		p_receive.add(new Checkbox("Yes", g , true));
+		p_receive.add(new Checkbox("No", g , false));
+		
+		add(la_receive);
+		add(p_receive); //프레임에 부착
+		add(bt_regist);
 		
 		//보여주기 (화면 중앙으로 오게)
 		setSize(500,500);
