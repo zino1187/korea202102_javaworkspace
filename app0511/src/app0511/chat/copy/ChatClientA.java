@@ -20,6 +20,7 @@ public class ChatClientA extends JFrame implements ActionListener, KeyListener{
 	JScrollPane scroll;
 	JTextField t_input;
 	JButton bt;
+	ChatClientB cb; //내가 제어하고싶은 상대방 창에 대한 레퍼런스 변수
 	
 	public ChatClientA() {
 		//생성
@@ -71,7 +72,8 @@ public class ChatClientA extends JFrame implements ActionListener, KeyListener{
 		if(e.getSource() == bt_open) {
 			//System.out.println("열기 눌렀네");
 			//ChatClientB가 태어나도록 하자!!!
-			ChatClientB cb = new ChatClientB();
+			cb = new ChatClientB(this);
+			//cb.setArea2(area);
 		}else if(e.getSource() == bt) {//전송 버튼 누르면
 			//System.out.println("전송 눌렀네");
 			showText();
@@ -80,9 +82,12 @@ public class ChatClientA extends JFrame implements ActionListener, KeyListener{
 	
 	//전송처리 
 	public void showText() {
-		String msg = t_input.getText();//(1) TextField 값 가져오기
-		area.append(msg+"\n");//(2) TextArea에 누적
-		t_input.setText("");//(3)기존 입력값 초기화 
+		String msg = this.t_input.getText();//(1) TextField 값 가져오기
+		this.area.append(msg+"\n");//(2) TextArea에 누적
+		this.t_input.setText("");//(3)기존 입력값 초기화 
+		
+		//친구인 상대방 채팅창의 area.append(msg+"\n");
+		cb.area.append(msg+"\n");
 	}
 	
 	public static void main(String[] args) {
