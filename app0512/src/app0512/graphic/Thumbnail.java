@@ -12,10 +12,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Thumbnail extends JPanel implements MouseListener{
+	PhotoAlbum photoAlbum;
 	Toolkit kit; //이미지를 얻을 수 있는 클래스 
 	Image image; //추상클래스이므로, new불가
 	
-	public Thumbnail() {
+	public Thumbnail(PhotoAlbum photoAlbum) {
+		this.photoAlbum=photoAlbum;
+		
 		kit=Toolkit.getDefaultToolkit(); //static 메서드 , 즉 클래스 소속 메서드
 		image = kit.getImage("D:\\workspace\\korea202102_javaworkspace\\app0512\\res\\images\\mt.jpg");
 		image = image.getScaledInstance(100, 90, Image.SCALE_SMOOTH);
@@ -32,6 +35,7 @@ public class Thumbnail extends JPanel implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		System.out.println("나 눌렀어?");
+		photoAlbum.detailView.setImage(image); 
 	}
 
 	@Override
