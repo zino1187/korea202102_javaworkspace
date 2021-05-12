@@ -12,7 +12,6 @@ public class GalleryDetail extends JPanel{
 	//누군가에 의해  Image를 넘겨받으려면, 메서드를 준비해놓아
 	//야 한다!!!
 	public void setImage(Image image) {
-		this.image = image;
 		this.image = image.getScaledInstance(500, 400, Image.SCALE_SMOOTH);
 	}
 	
