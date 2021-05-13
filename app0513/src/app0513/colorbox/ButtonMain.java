@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,7 +26,10 @@ public class ButtonMain extends JFrame implements ActionListener{
 	
 	//배열이 나쁜건 아니지만, 선언시에 반드시 그 크기를 정해야 한다는 것은 프로그램 개발시 유연성에 있어서는 
 	//불편하다.. 그렇다면 자바스크립트처럼 배열의 크기가 동적으로 늘어날수 있는 형태의 객체는 없을까? of course 有
-	JButton[] btnArray2=new JButton[1000]; //낱개로 생성된 버튼들을 담게될 배열 
+	//JButton[] btnArray2=new JButton[1000]; //낱개로 생성된 버튼들을 담게될 배열
+	
+	//배열과 거의 같지만, 크기가 동적으로 변할 수 있는 컬렉션프레임웍 중 List계열을 이용해보자!!!
+	ArrayList<JButton> list=new ArrayList<JButton>(); //현재는 사이즈 0이지만, 늘어날 수 있다!!
 	
 	public ButtonMain() {
 		//생성 
@@ -80,13 +84,20 @@ public class ButtonMain extends JFrame implements ActionListener{
 		p_center.updateUI();
 		//추후 배경색 버튼을 눌렀을때 생성된 모든 버튼의 색상을 변경하기 위해서는 반복문이 필요하고, 
 		//반복문을 적용하려면, 배열 형태 또는 무언가 규칙이 있어야 한다.. 
-		btnArray2[count]=bt;
+		list.add(bt);
 		count++;
 	}
 	public void setBg() {
-		//배열에 들어있는 버튼 수 만큼 배경색 적용 
+		//배열에 들어있는 버튼 수 만큼 배경색 적용
+		/*배열 사용시 
 		for(int i=0;i<btnArray.length;i++) {
 			btnArray[i].setBackground(Color.RED);
+		}
+		*/
+		
+		//List 사용시
+		for( JButton btn : list) {
+			btn.setBackground(Color.RED);
 		}
 	}
 	
