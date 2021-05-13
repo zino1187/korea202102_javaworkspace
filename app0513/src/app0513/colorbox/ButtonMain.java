@@ -14,18 +14,25 @@ import javax.swing.JTextField;
 public class ButtonMain extends JFrame implements ActionListener{
 	JPanel p_north;
 	JTextField t_ea;
-	JButton bt_create; 
+	JButton bt_create;  	//일괄 생성 버튼
+	JButton bt_create2; //낱개 생성버튼
 	JButton bt_bg;
 	JPanel p_center;
 	
 	//대부분의 응용프로그램에서는 배열 선언시 반드시 그 크기를 명시해야 한다..
 	JButton[] btnArray;
+	int count=0; //버튼에 붙여질 순번
+	
+	//배열이 나쁜건 아니지만, 선언시에 반드시 그 크기를 정해야 한다는 것은 프로그램 개발시 유연성에 있어서는 
+	//불편하다.. 그렇다면 자바스크립트처럼 배열의 크기가 동적으로 늘어날수 있는 형태의 객체는 없을까? of course 有
+	JButton[] btnArray2=new JButton[1000]; //낱개로 생성된 버튼들을 담게될 배열 
 	
 	public ButtonMain() {
 		//생성 
 		p_north = new JPanel();
 		t_ea = new JTextField(10);
-		bt_create = new JButton("생성하기");
+		bt_create = new JButton("일괄생성");
+		bt_create2 = new JButton("낱개생성");
 		bt_bg = new JButton("배경색");
 		p_center = new JPanel();
 		
@@ -36,12 +43,14 @@ public class ButtonMain extends JFrame implements ActionListener{
 		//조립 
 		p_north.add(t_ea);
 		p_north.add(bt_create);
+		p_north.add(bt_create2);
 		p_north.add(bt_bg);
 		
 		add(p_north, BorderLayout.NORTH);
 		add(p_center);
 		
 		bt_create.addActionListener(this);//리스너와 연결 
+		bt_create2.addActionListener(this);//리스너와 연결 
 		bt_bg.addActionListener(this);//리스너와 연결 
 		
 		//보이기 
@@ -63,7 +72,17 @@ public class ButtonMain extends JFrame implements ActionListener{
 		}
 		p_center.updateUI();//다시 그려라
 	}
-	
+	public void createOne() {
+		
+		//누를때마다, 버튼이 누적되게 처리해본다!!
+		JButton bt = new JButton("버튼"+count);
+		p_center.add(bt); //센터 영역에 버튼 추가 
+		p_center.updateUI();
+		//추후 배경색 버튼을 눌렀을때 생성된 모든 버튼의 색상을 변경하기 위해서는 반복문이 필요하고, 
+		//반복문을 적용하려면, 배열 형태 또는 무언가 규칙이 있어야 한다.. 
+		btnArray2[count]=bt;
+		count++;
+	}
 	public void setBg() {
 		//배열에 들어있는 버튼 수 만큼 배경색 적용 
 		for(int i=0;i<btnArray.length;i++) {
@@ -72,8 +91,10 @@ public class ButtonMain extends JFrame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == bt_create) {
+		if(e.getSource() == bt_create) {//일괄 생성
 			create();
+		}else if(e.getSource() == bt_create2) {//낱개로 생성
+			createOne();
 		}else if(e.getSource() == bt_bg) {
 			setBg();
 		}
