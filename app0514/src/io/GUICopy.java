@@ -1,10 +1,14 @@
 package io;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -12,7 +16,7 @@ import javax.swing.JTextField;
 /*
  파일복사 기능을 GUI기반으로 처리해 본다
  */
-public class GUICopy extends JFrame implements WindowListener{
+public class GUICopy extends JFrame implements WindowListener, ActionListener{
 	JButton bt_open; //복사원본 탐색창 열기
 	JTextField t_open;
 	JButton bt_target; //복사될 파일 탐색창 열기
@@ -20,6 +24,7 @@ public class GUICopy extends JFrame implements WindowListener{
 	JTextArea area;
 	JScrollPane scroll;
 	JButton bt_copy;
+	JFileChooser chooser; //파일 탐색기 창 객체
 	
 	public GUICopy() {
 		//생성
@@ -30,6 +35,7 @@ public class GUICopy extends JFrame implements WindowListener{
 		area = new JTextArea();
 		scroll = new JScrollPane(area);
 		bt_copy = new JButton("복사실행");
+		chooser = new JFileChooser();
 		
 		//스타일, 레이아웃 
 		setLayout(new FlowLayout());
@@ -49,6 +55,9 @@ public class GUICopy extends JFrame implements WindowListener{
 		add(bt_copy);
 		
 		this.addWindowListener(this);//이벤트 연결
+		bt_open.addActionListener(this);
+		bt_target.addActionListener(this);
+		bt_copy.addActionListener(this);
 		
 		//보여주기
 		setBounds(2400, 100, 500,350);
@@ -56,6 +65,33 @@ public class GUICopy extends JFrame implements WindowListener{
 		//아래의 메서드 호출하면 안되느 이유? 윈도우창 닫을때 스트림을 닫는 처리를 하기 위해...
 		//결론: 윈도우리스너를 구현하여, 창 닫을때 스트림 닫아야 한다..
 		//setDefaultCloseOperation(); 
+	}
+	public void openFile() {
+		//파일 열기용 탐색기 띄우기 
+		int res = chooser.showOpenDialog(this);//탐색기 창들은 모두 윈도우에 의존적이다~!
+		
+		if(res == JFileChooser.APPROVE_OPTION) { //ok버튼 누름
+			//선택한 파일의 디스크상의 풀 시스템 경로를 얻어와서, JTextField에 출력해보자!!
+			
+			//java.io에 들어있는 File 클래스는 해당 파일에 대한 정보를 담고 있는 객체이다..
+			File file = chooser.getSelectedFile();
+			t_open.setText(file.getAbsolutePath()); //텍스트필드에 파일의 풀 경로를 출력
+		}
+	}
+	public void saveFile() {
+		
+	}
+	public void copyFile() {
+		
+	}
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==bt_open) {
+			openFile();
+		}else if(e.getSource()==bt_target) {
+			saveFile();
+		}else if(e.getSource()==bt_copy) {
+			copyFile();
+		}
 	}
 	
 	public static void main(String[] args) {

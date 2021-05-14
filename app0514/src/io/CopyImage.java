@@ -23,6 +23,7 @@ class CopyImage{
 				if(data==-1)break;
 				fos.write(data); //1byte 쓰기(출력)
 			}
+			System.out.println("복사 완료!!");
 			//스트림은 반드시 닫아야 한다
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
