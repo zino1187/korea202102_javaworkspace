@@ -1,4 +1,4 @@
-package io;
+package io.bytestream;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
