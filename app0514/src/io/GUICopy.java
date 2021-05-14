@@ -6,6 +6,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -25,6 +29,9 @@ public class GUICopy extends JFrame implements WindowListener, ActionListener{
 	JScrollPane scroll;
 	JButton bt_copy;
 	JFileChooser chooser; //파일 탐색기 창 객체
+
+	FileInputStream fis; //파일용 입력 스트림
+	FileOutputStream fos;//파일용 출력 스트림
 	
 	public GUICopy() {
 		//생성
@@ -35,7 +42,7 @@ public class GUICopy extends JFrame implements WindowListener, ActionListener{
 		area = new JTextArea();
 		scroll = new JScrollPane(area);
 		bt_copy = new JButton("복사실행");
-		chooser = new JFileChooser();
+		chooser = new JFileChooser("D:\\workspace\\korea202102_javaworkspace\\app0513\\res");
 		
 		//스타일, 레이아웃 
 		setLayout(new FlowLayout());
@@ -79,11 +86,39 @@ public class GUICopy extends JFrame implements WindowListener, ActionListener{
 		}
 	}
 	public void saveFile() {
+		int res=chooser.showSaveDialog(this);
+		
+		if(res == JFileChooser.APPROVE_OPTION) {
+			File file = chooser.getSelectedFile();
+			t_target.setText(file.getAbsolutePath());
+		}
 		
 	}
+	
 	public void copyFile() {
+		//정해진 두 경로를 이용하여, Stream을 만들어 입출력을 시도해보자!!!!
+		try {
+			fis = new FileInputStream(t_open.getText());
+			fos = new FileOutputStream(t_target.getText());
+			area.append("입력&출력 스트림 생성 완료\n");
+			
+			//복사수행~~
+			int data=-1;
+			
+			while(true) {
+				data=fis.read(); //1byte 읽기(입력)
+				if(data==-1)break;//더이상 읽을 데이터가 없을 경우 -1이므로..
+				fos.write(data); //1byte 쓰기(출력)
+			}
+			area.append("복사완료\n");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
+	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==bt_open) {
 			openFile();
