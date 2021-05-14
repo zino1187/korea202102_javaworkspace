@@ -14,6 +14,7 @@ import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -109,12 +110,29 @@ public class GUICopy extends JFrame implements WindowListener, ActionListener{
 				data=fis.read(); //1byte 읽기(입력)
 				if(data==-1)break;//더이상 읽을 데이터가 없을 경우 -1이므로..
 				fos.write(data); //1byte 쓰기(출력)
+				area.append(data+"\n");
 			}
 			area.append("복사완료\n");
+			JOptionPane.showMessageDialog(this, "복사완료");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+			if(fis!=null) {
+				try {
+					fis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if(fos !=null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		
 	}
