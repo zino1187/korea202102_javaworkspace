@@ -1,7 +1,13 @@
 package app0517.editor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -20,6 +26,7 @@ public class MemoEditor extends JFrame{
 	JMenuItem item_exit; //끝내기
 	JTextArea area;
 	JScrollPane scroll;
+	JFileChooser chooser;//파일 탐색기
 	
 	public MemoEditor() {
 		//생성
@@ -32,6 +39,7 @@ public class MemoEditor extends JFrame{
 		item_exit 	= new JMenuItem("끝내기");
 		area = new JTextArea();
 		scroll = new JScrollPane(area);
+		chooser = new JFileChooser("D:\\workspace\\korea202102_javaworkspace\\app0514\\src");
 		
 		//스타일 & 레이아웃 
 		
@@ -60,7 +68,26 @@ public class MemoEditor extends JFrame{
 		item_open.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				//파일열기 아이템을 누르면, JTextArea에 "안녕" 이라는 문자열을 출력해본다
-				area.append("안녕");				
+				openFile();				
+			}
+		});
+		
+		//새파일 처리 
+		item_new.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//새 파일은 area를 깨끗이 비워놓는 것임..
+				area.setText(""); //공백문자로 대체
+			}
+		});
+		
+		//새이름으로 저장 
+		item_saveas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				/*	1) showSaveDialog() 호출하여 파일저장 탐색기 띄운다
+				 	2) 선택한 파일경로 얻는다 
+				 	3) 빈파일을 파일출력스트림으로 생성한다 
+				 	4) 생성된 파일출력스트림을 통해 area의 내용을 파일에 넣는다(출력)
+				 */	
 			}
 		});
 		
@@ -69,6 +96,53 @@ public class MemoEditor extends JFrame{
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE); //무언가 창을 닫을때, 자원을 반납하려면
 		// 이 메서드 호출대신 WindowListener를 구현하자!
+	}
+	
+	//파일 열어서, 편집기창에 출력하기 (불러오기)
+	public void openFile() {
+		int res=chooser.showOpenDialog(this);
+		
+		if(res==JFileChooser.APPROVE_OPTION) { 
+			//선택한 파일에 대한 입력스트림을 생성하여, 내용을 읽어와서 area에 출력!!
+			File file= chooser.getSelectedFile(); //선택한 파일 반환 받음
+			
+			//문자(영문,한글 모두: 즉 2byte를 이해함)를 읽을수 있는 스트림 생성
+			FileReader reader=null; //close하기 위해 밖으로 뺌
+			BufferedReader buffr=null; //문자스트림을 대상으로 버퍼를 지원하는 스트림
+			
+			try {
+				reader = new FileReader(file);//파일을 대상으로 빨대 꽂음
+				buffr = new BufferedReader(reader); //버퍼처리된 스트림으로 빨대업그레이드
+				
+				String data=null; //읽혀진 문자(정확히는 문자의 코드)를 담게될 정수
+				
+				while(true) {
+					data = buffr.readLine(); //한 문자열 즉 한 줄(케릭터들을 모아서) 읽기
+					if(data==null)break;
+					area.append(data+"\n");
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}finally {				
+				if(buffr!=null) {
+					try {
+						buffr.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				if(reader!=null) {
+					try {
+						reader.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		}
 	}
 	
 	public static void main(String[] args) {
