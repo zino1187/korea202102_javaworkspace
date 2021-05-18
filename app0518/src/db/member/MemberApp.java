@@ -9,6 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -35,6 +36,7 @@ public class MemberApp extends JFrame{
 	JTextArea area;
 	JScrollPane scroll;
 	
+	Connection con; //모든 멤버 메서드에서 접근하기 위하여 
 	
 	public MemberApp() {
 		//생성 
@@ -90,6 +92,15 @@ public class MemberApp extends JFrame{
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.out.println("윈도우 닫아요!!");
+				disConnect();
+				System.exit(0);//프로세스 죽이기!!!
+			}
+		});
+		
+		//등록 버튼과 리스너 연결
+		bt_regist.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				regist();
 			}
 		});
 		
@@ -111,7 +122,8 @@ public class MemberApp extends JFrame{
 			area.append("드라이버 로드 성공\n");
 			
 			String url="jdbc:mysql://"+t_url.getText()+":"+t_port.getText()+"/javase";
-			Connection con=DriverManager.getConnection(url, "root", "1234");
+			con=DriverManager.getConnection(url, "root", "1234");
+			
 			if(con!=null) {
 				area.append("접속 성공\n");
 			}else {
@@ -126,9 +138,51 @@ public class MemberApp extends JFrame{
 		
 	}
 	
+	//mysql서버에 insert 쿼리문 실행 
+	public void regist() {
+		//아래의 PreparedStatement 는 쿼리문 마다 1회성으로 생성해야 한다..
+		PreparedStatement pstmt=null;//쿼리문 수행 객체
+		String sql="insert into member(user_id, password, name) values(?,?,?)";
+		
+		try {
+			pstmt=con.prepareStatement(sql);//SQL문을 이용하여, pstmt 객체 생성
+			//수행할 쿼리 유형이 DML(insert, update, delete) executeUpdate() 
+			//바인드 변수값 설정
+			pstmt.setString(1, t_user_id.getText());
+			//password는 char배열로 생성후, 다시 String으로 변환하여 사용하자!!
+			//char[] ch = t_password.getPassword();
+			//String pass = new String(t_password.getPassword());
+			pstmt.setString(2, new String(t_password.getPassword()));
+			pstmt.setString(3, t_name.getText());
+			
+			int result = pstmt.executeUpdate();//바로 이 시점에 쿼리 실행!!!!!!!!!!!!
+			if(result==1) {
+				area.append("회원 등록 성공\n");
+			}else {
+				area.append("회원 등록에 실패\n"); //에러는 아닌, 그냥 안들어간 것이다!!
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			if(pstmt!=null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 	//DB접속 해제 메서드
 	public void disConnect() {
-		
+		if(con !=null) { //접속객체가 메모리에 올라왔을때만..
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	public static void main(String[] args) {
 		new MemberApp(); 
