@@ -1,14 +1,14 @@
-package db.mysql;
+package db.oracle;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Connection; //접속 성공 후, 해당 DB에 대한 접속정보를 가진 객체
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-class TestApp{
+class TestOracle{
 
 	public static void main(String[] args){
-		String url="jdbc:mysql://localhost:3306/javase"; //정해진 문자열 형식!! 암기
+		String url="오라클용"; //정해진 문자열 형식!! 암기
 		String user="root";
 		String pass="1234";
 
