@@ -10,6 +10,7 @@ import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -101,6 +102,14 @@ public class MemberApp extends JFrame{
 		bt_regist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				regist();
+				area.setText("");//area 지우기!!!!
+				getList();
+			}
+		});
+		
+		bt_list.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				getList();
 			}
 		});
 		
@@ -121,7 +130,7 @@ public class MemberApp extends JFrame{
 			Class.forName("com.mysql.jdbc.Driver");
 			area.append("드라이버 로드 성공\n");
 			
-			String url="jdbc:mysql://"+t_url.getText()+":"+t_port.getText()+"/javase";
+			String url="jdbc:mysql://"+t_url.getText()+":"+t_port.getText()+"/javase?characterEncoding=UTF-8";
 			con=DriverManager.getConnection(url, "root", "1234");
 			
 			if(con!=null) {
@@ -171,6 +180,36 @@ public class MemberApp extends JFrame{
 					e.printStackTrace();
 				}
 			}
+		}
+	}
+	
+	//목록 출력 
+	public void getList() {
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		String sql="select * from member";
+		
+		try {
+			pstmt=con.prepareStatement(sql);//쿼리 수행 객체 생성
+			rs=pstmt.executeQuery();//수행할 쿼리가 select문 인경우 ResultSet 반환됨
+			
+			//rs의 커서를 움직여가면서, 모든 레코드에 접근하여 area에 출력해보자!!
+			while(rs.next()){//커서 한칸 전진!!
+				//현재 커서가 가리키는 레코드를 컬럼명으로 접근해보자!!
+				int member_id = rs.getInt("member_id");
+				String user_id = rs.getString("user_id");
+				String password = rs.getString("password");
+				String name =rs.getString("name");
+				String regdate = rs.getString("regdate");
+				
+				area.append(member_id+"\t"+user_id+"\t"+password+"\t"+name+"\t"+regdate+"\n");
+				area.append("-------------------------------------------------------------------------------------------------------------------------- \n");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			if(rs!=null)try {rs.close();}catch(SQLException e) {e.printStackTrace();}
+			if(pstmt!=null)try {pstmt.close();}catch(SQLException e) {e.printStackTrace();}
 		}
 	}
 	
