@@ -18,7 +18,7 @@ import javax.swing.JTable;
 public class TableBasic extends JFrame{
 	//JTable의 생성자 중, 레코드는 이차원배열로 지원하고, 컬럼의 제목은 일차원배열로 지원하는 3번째 생성자를 이용해보자!!
 	String[] columns= {"member_id","user_id", "password","name","regdate"};
-	String[][] rows= {}; //생성되지도 않음
+	String[][] rows= {}; //아직 DB연동 전 이므로, 배열의 크기를 알수없기 때문에 임시적으로 비어있는 배열을 선언한것뿐이다
 	JTable table;
 	JScrollPane scroll;
 	
@@ -29,6 +29,8 @@ public class TableBasic extends JFrame{
 	Connection con; //접속 후 그 정보를 가진 객체
 	
 	public TableBasic() {
+		connect(); //JTable이 사용할 이차원배열을 먼저 구해야하므로..
+		
 		table = new JTable(rows, columns); 
 		scroll = new JScrollPane(table);
 		
@@ -50,7 +52,6 @@ public class TableBasic extends JFrame{
 		});
 		
 		
-		connect();
 	}
 	//데이터베이스 가져오기
 	public void connect(){
@@ -103,13 +104,23 @@ public class TableBasic extends JFrame{
 			int num = rs.getRow(); //현재의 레코드 순번을 반환받아보자
 			System.out.println("저의 현재 위치는 "+ num);
 			
-			//String[][] data = new String[ 유동적 ][columns.length];
+			String[][] data = new String[num][columns.length];
 			
-			
+			rs.beforeFirst();//last 에 가 있는 rs의 커서를 다시 처음으로 원상복귀 시키자
+			int index=0;
+			while(rs.next()) { //커서 한칸 전진!!
+				//rs의 레코드에 접근하여, empty상태에 있는 2차원 배열로 데이터를 옮겨보자!!!
+				data[index][0]=Integer.toString(rs.getInt("member_id")); // int형을 String 객체형으로 변환!! 이때 사용되는 객체가 바로 Wrapper
+				data[index][1]=rs.getString("user_id");
+				data[index][2]=rs.getString("password");
+				data[index][3]=rs.getString("name");
+				data[index][4]=rs.getString("regdate");
+				index++;
+			}	
+			rows=data; //JTable이 참조할 예정인 rows의 주소값을 data이차원배열로 대체해버리자!!
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public static void main(String[] args) {
