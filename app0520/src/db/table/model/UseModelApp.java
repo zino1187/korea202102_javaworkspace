@@ -1,11 +1,18 @@
 package db.table.model;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
 /*
  * JTable이 사용할 데이터를, TableModel을 이용해서 좀더 유지보수성에 있어 개선을 해보자
@@ -17,33 +24,99 @@ import javax.swing.table.TableModel;
 public class UseModelApp extends JFrame{
 	JTable table;
 	JScrollPane scroll;
+	String[] columnName= {"member_id","user_id","password","name","regdate"};
+	String[][] rows= {};
+
+	String url="jdbc:mysql://localhost:3306/javase?characterEncoding=UTF-8";
+	String user="root";
+	String password="1234";
+	Connection con;
 	
 	public UseModelApp() {
 		table = new JTable(new AbstractTableModel() {
 			
 			//총 레코드수를 반환하는 메서드 그리고 이 메서드는 JTable이 호출하는 거다!!
-			public int getRowCount() {
-				return 10;
+			public int getRowCount() {//층수
+				return rows.length;
 			}
 			//총 컬럼수를 반환하는 메서드, 그리고 이 메서드 또한 JTable이 호출하는 거다!!
 			public int getColumnCount() {
-				return 5;
+				return columnName.length;
 			}
+			
+			public String getColumnName(int col) { //col 변수에 호출시마다 1씩 증가시키며 호출 0,1,2,3,4
+				return columnName[col];
+			}
+			
 			//row, col 좌표에 어떤 데이터가 있는 반환 하는 메서드, 이 또한 JTable이 호출하는 거다!!
 			//즉 TableModel의 모든 메서드가 다 JTable을 위한 메서드이다!!
 			public Object getValueAt(int row, int col) {
 				System.out.println("getValueAt("+row+", "+col+")");
-				return "뽀미";
+				return rows[row][col];
 			}
 		}); // 테이블모델 객체 이용가능
 		
 		scroll = new JScrollPane(table);
 		add(scroll);
 		
+		//윈도우와 리스너 연결 
+		this.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				if(con!=null) {
+					try {
+						con.close();
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+				}	
+			}
+		});
+		
 		setBounds(2400, 100, 600,400);
 		setVisible(true);
+		
+		connect();
 	}
-
+	
+	public void connect() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");//드라이버 로드
+			con = DriverManager.getConnection(url, user, password);//접속
+			if(con==null) {
+				JOptionPane.showMessageDialog(this, "MySQL 접속 실패");
+			}else {
+				getList();
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void getList() {
+		PreparedStatement pstmt=null;
+		ResultSet rs = null;
+		String sql="select * from member";
+		
+		try {
+			pstmt=con.prepareStatement(sql);
+			rs=pstmt.executeQuery();//레코드 담기!!
+			
+			//rs를 이차원배열로 바꾼다!!
+			rows=new String[][]{ //데이터 갱신
+				{"1","Benz","1111","벤츠","2019"},
+				{"2","Audi","2222","아우디","2018"},
+				{"3","BMW","3333","뱀","2020"}
+			};			
+			table.updateUI();//디자인 갱신 
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public static void main(String[] args) {
 		new UseModelApp();
 
