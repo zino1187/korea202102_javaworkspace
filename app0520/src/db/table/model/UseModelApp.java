@@ -1,5 +1,9 @@
 package db.table.model;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
@@ -8,10 +12,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
 
 /*
@@ -24,6 +33,14 @@ import javax.swing.table.AbstractTableModel;
 public class UseModelApp extends JFrame{
 	JTable table;
 	JScrollPane scroll;
+	JTextArea area; //선택한 회원의 상세정보 출력할 영역
+
+	JPanel p_west;
+	JTextField t_user_id;
+	JTextField t_password;
+	JTextField t_name;
+	JButton bt_regist, bt_del;
+	
 	String[] columnName= {"member_id","user_id","password","name","regdate"};
 	String[][] rows= {};
 
@@ -57,7 +74,52 @@ public class UseModelApp extends JFrame{
 		}); // 테이블모델 객체 이용가능
 		
 		scroll = new JScrollPane(table);
+		area = new JTextArea();
+		
+		//서쪽의 등록폼 생성 
+		p_west = new JPanel();
+		t_user_id = new JTextField(15);
+		t_password = new JPasswordField(15);
+		t_name = new JTextField(15);
+		bt_regist = new JButton("등록");
+		bt_del = new JButton("삭제");
+		
+		
+		//스타일
+		scroll.setPreferredSize(new Dimension(600,400));
+		area.setPreferredSize(new Dimension(600, 150));
+		p_west.setPreferredSize(new Dimension(200,400));
+		
+		//조립 
+		p_west.add(t_user_id);
+		p_west.add(t_password);
+		p_west.add(t_name);
+		p_west.add(bt_regist);
+		p_west.add(bt_del);
+		
 		add(scroll);
+		add(area, BorderLayout.SOUTH);
+		add(p_west, BorderLayout.WEST);
+		
+		
+		//테이블에 클릭 이벤트 구현 
+		table.addMouseListener(new MouseAdapter() {
+			public void mouseReleased(MouseEvent e) {
+				//area.append("해당 레코드 클릭햇어?\n");
+				int row = table.getSelectedRow();
+				int col = table.getSelectedColumn();
+				String value = (String)table.getValueAt(row, col);
+				//area.setText("당신이 선택한 위치는 "+row+", "+col+" 그리고 그 좌표에 들어있는 데이터 값은 "+value);
+				area.setText("");//출력전에 초기화
+				area.append("member_id : "+table.getValueAt(row, 0)+"\n");
+				area.append("아이디 : "+table.getValueAt(row, 1)+"\n");
+				area.append("비밀번호 : "+table.getValueAt(row, 2)+"\n");
+				area.append("이름 : "+table.getValueAt(row, 3)+"\n");
+				area.append("가입일 : "+table.getValueAt(row, 4)+"\n");
+				
+			
+			}
+		});
 		
 		//윈도우와 리스너 연결 
 		this.addWindowListener(new WindowAdapter() {
@@ -69,10 +131,11 @@ public class UseModelApp extends JFrame{
 						e1.printStackTrace();
 					}
 				}	
+				System.exit(0); //kill process !!!
 			}
 		});
 		
-		setBounds(2400, 100, 600,400);
+		setBounds(2400, 100, 800,400);
 		setVisible(true);
 		
 		connect();
@@ -100,23 +163,48 @@ public class UseModelApp extends JFrame{
 		String sql="select * from member";
 		
 		try {
-			pstmt=con.prepareStatement(sql);
-			rs=pstmt.executeQuery();//레코드 담기!!
+			pstmt=con.prepareStatement(sql
+					, ResultSet.TYPE_SCROLL_INSENSITIVE
+					, ResultSet.CONCUR_READ_ONLY);
 			
+			rs=pstmt.executeQuery();//레코드 담기!!
+			rs.last(); //커서를 마지막 레코드로 이동
+			int total = rs.getRow();
+			
+			String[][] data = new String[total][columnName.length]; //empty 이차원 배열 생성
 			//주의할 점)  스크롤가능한 옵션을 줘야 하고, 커서의 위치에 주의하자!!
 			//rs의 정보를 이차원배열로 옮겨보기!!
+			rs.beforeFirst(); //커서를 다시 처음 위치로 
 			
+			int index=0;
+			while(rs.next()) {
+				data[index][0]=Integer.toString(rs.getInt("member_id"));
+				data[index][1]=rs.getString("user_id");
+				data[index][2]=rs.getString("password");
+				data[index][3]=rs.getString("name");
+				data[index][4]=rs.getString("regdate");
+				index++;
+			}
 			
-			//rs를 이차원배열로 바꾼다!!
-			rows=new String[][]{ //데이터 갱신
-				{"1","Benz","1111","벤츠","2019"},
-				{"2","Audi","2222","아우디","2018"},
-				{"3","BMW","3333","뱀","2020"}
-			};			
+			rows=data;//rs를 이차원배열로 바꾼다!!	
 			table.updateUI();//디자인 갱신 
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			if(rs!=null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(pstmt!=null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		
 	}
