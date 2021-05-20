@@ -103,6 +103,10 @@ public class UseModelApp extends JFrame{
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery();//레코드 담기!!
 			
+			//주의할 점)  스크롤가능한 옵션을 줘야 하고, 커서의 위치에 주의하자!!
+			//rs의 정보를 이차원배열로 옮겨보기!!
+			
+			
 			//rs를 이차원배열로 바꾼다!!
 			rows=new String[][]{ //데이터 갱신
 				{"1","Benz","1111","벤츠","2019"},
