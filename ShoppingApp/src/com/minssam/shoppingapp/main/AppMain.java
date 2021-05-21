@@ -20,33 +20,30 @@ import com.minssam.shoppingapp.product.ProductMain;
 public class AppMain extends JFrame implements ActionListener{
 	JPanel p_north;
 	String[] menu_title= {"상품관리","회원관리","주문관리","고객센터","Login","환경설정"};
-	JButton[] bt_menu=new JButton[menu_title.length]; //배열생성
+	CustomButton[] bt_menu=new CustomButton[menu_title.length]; //배열생성
 	
 	JPanel p_center;//페이지를 교체하기 위한 패널(페이지들 간의 공존을 위해)
 	
 	//페이지 선언 
-	ProductMain productMain; //상품관리 페이지
-	MemberMain memberMain;//회원관리 페이지
-	OrderMain orderMain;//주문관리
-	CustomerMain customerMain;//고객센터
-	LoginForm loginForm;//로그인
-	ConfigMain configMain;//환경설정
+	Page[] pages = new Page[6];
 	
 	public AppMain() {
 		//생성
 		p_north = new JPanel();
 		for(int i=0;i< menu_title.length;i++) {
-			bt_menu[i] = new JButton(menu_title[i]);
+			bt_menu[i] = new CustomButton(menu_title[i]);
+			bt_menu[i].setId(i); //반복문의 i 를 각 버튼의 식별  id 로 할당!!!
 		}
 		
 		//페이지들 생성 
 		p_center = new JPanel();
-		productMain = new ProductMain(); //상품관리
-		memberMain = new MemberMain();//회원관리
-		orderMain = new OrderMain();//주문관리
-		customerMain = new CustomerMain();//고객센터
-		loginForm = new LoginForm();//로그인
-		configMain = new ConfigMain();//환경설정
+		
+		pages[0] = new ProductMain(); //상품관리
+		pages[1] = new MemberMain();//회원관리
+		pages[2] = new OrderMain();//주문관리
+		pages[3] = new CustomerMain();//고객센터
+		pages[4] = new LoginForm();//로그인
+		pages[5] = new ConfigMain();//환경설정
 		
 		//스타일
 		
@@ -56,14 +53,11 @@ public class AppMain extends JFrame implements ActionListener{
 			p_north.add(bt);
 		}
 		add(p_north, BorderLayout.NORTH);
-		//p_center 에 페이지들 붙이기 
-		p_center.add(productMain);
-		p_center.add(memberMain);
-		p_center.add(orderMain);
-		p_center.add(customerMain);
-		p_center.add(loginForm);
-		p_center.add(configMain);
 		
+		//p_center 에 페이지들 붙이기
+		for(Page p : pages) {
+			p_center.add(p);
+		}
 		add(p_center);
 		
 		//리스너
@@ -84,8 +78,24 @@ public class AppMain extends JFrame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("버튼 눌렀어?");
+		//어떤 버튼이 눌렸는지? - 이벤트가 연결된 컴포넌트를 가리켜 이벤트 소스 
+		Object obj = e.getSource();
+		//obj는 오브젝트 자료형이기 때문에, 버튼을 가리킬수는 있지만, 버튼 보다는 보편적인 기능만을 가지고 
+		//있기에, 즉 가진게 별로 없기에 버튼의 특징을 이용하기 위해서는 버튼 형으로 변환해서 사용하자!!
+		CustomButton bt=(CustomButton)obj; //down casting
+		//System.out.println(bt.getText());
+		
+		//내가 누른 버튼에 해당하는 페이지만 setVisible() 을 true로 놓고 나머지는 false로 놓자!!
+		for(int i=0;i<pages.length;i++) {
+			if(bt.getId()==i) {
+				pages[i].setVisible(true); //현재 선택한 버튼과 같은 인덱스를 갖는 페이지라면..
+			}else {
+				pages[i].setVisible(false);
+			}
+		}
+		
 	}
+	
 	public static void main(String[] args) {
 		new AppMain();
 

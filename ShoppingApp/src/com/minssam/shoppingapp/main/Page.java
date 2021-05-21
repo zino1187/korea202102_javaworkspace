@@ -8,5 +8,6 @@ import javax.swing.JPanel;
 public class Page extends JPanel{
 	public Page() {
 		setPreferredSize(new Dimension(170, 150));
+		setVisible(false);
 	}
 }
