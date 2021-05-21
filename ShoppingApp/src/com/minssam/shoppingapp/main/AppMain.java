@@ -34,7 +34,7 @@ public class AppMain extends JFrame implements ActionListener{
 	
 	//데이터베스 관련 
 	String driver="com.mysql.jdbc.Driver"; // 8.xx 인 경우 com.mysql.jdbc.cj.Driver
-	String url="jdbc:mysql://localhost:3306/javase?characterEncoding=UTF-8";
+	String url="jdbc:mysql://localhost:3306/shoppingapp?characterEncoding=UTF-8";
 	String user="root";
 	String password="1234";
 	private Connection con;

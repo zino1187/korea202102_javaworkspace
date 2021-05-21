@@ -178,6 +178,7 @@ public class ProductMain extends Page{
 			
 			while(rs.next()){//커서한칸씩 이동하면서 true인 동안..
 				ch_top.add(rs.getString("top_name"));
+				System.out.println(rs.getString("top_name"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
