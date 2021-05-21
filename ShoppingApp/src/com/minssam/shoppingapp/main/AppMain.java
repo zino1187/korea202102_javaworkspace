@@ -7,6 +7,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -38,6 +40,8 @@ public class AppMain extends JFrame implements ActionListener{
 	private Connection con;
 	
 	public AppMain() {
+		connect();//DB접속
+		
 		//생성
 		p_north = new JPanel();
 		for(int i=0;i< menu_title.length;i++) {
@@ -86,7 +90,6 @@ public class AppMain extends JFrame implements ActionListener{
 		setBounds(1900, 10, 1200, 700);
 		setVisible(true);
 		
-		connect();//DB접속
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -134,6 +137,38 @@ public class AppMain extends JFrame implements ActionListener{
 			}
 		}
 	}
+	
+	//쿼리문이 DML
+	public void release(PreparedStatement pstmt) {
+		if(pstmt !=null) {
+			try {
+				pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	//쿼리문이 select인 경우
+	public void release(PreparedStatement pstmt, ResultSet rs) {
+		if(rs !=null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(pstmt !=null) {
+			try {
+				pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
 	
 	public Connection getCon() {
 		return con;
