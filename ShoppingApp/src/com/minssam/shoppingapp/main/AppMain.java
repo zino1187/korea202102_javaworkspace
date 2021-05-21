@@ -5,6 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -27,6 +30,13 @@ public class AppMain extends JFrame implements ActionListener{
 	//페이지 선언 
 	Page[] pages = new Page[6];
 	
+	//데이터베스 관련 
+	String driver="com.mysql.jdbc.Driver"; // 8.xx 인 경우 com.mysql.jdbc.cj.Driver
+	String url="jdbc:mysql://localhost:3306/javase?characterEncoding=UTF-8";
+	String user="root";
+	String password="1234";
+	private Connection con;
+	
 	public AppMain() {
 		//생성
 		p_north = new JPanel();
@@ -38,12 +48,12 @@ public class AppMain extends JFrame implements ActionListener{
 		//페이지들 생성 
 		p_center = new JPanel();
 		
-		pages[0] = new ProductMain(); //상품관리
-		pages[1] = new MemberMain();//회원관리
-		pages[2] = new OrderMain();//주문관리
-		pages[3] = new CustomerMain();//고객센터
-		pages[4] = new LoginForm();//로그인
-		pages[5] = new ConfigMain();//환경설정
+		pages[0] = new ProductMain(this); //상품관리
+		pages[1] = new MemberMain(this);//회원관리
+		pages[2] = new OrderMain(this);//주문관리
+		pages[3] = new CustomerMain(this);//고객센터
+		pages[4] = new LoginForm(this);//로그인
+		pages[5] = new ConfigMain(this);//환경설정
 		
 		//스타일
 		
@@ -63,6 +73,7 @@ public class AppMain extends JFrame implements ActionListener{
 		//리스너
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
+				disConnect(); //DB 접속해제
 				System.exit(0); //kill process
 			}
 		});
@@ -74,6 +85,8 @@ public class AppMain extends JFrame implements ActionListener{
 		//보여주기
 		setBounds(1900, 10, 1200, 700);
 		setVisible(true);
+		
+		connect();//DB접속
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -95,9 +108,46 @@ public class AppMain extends JFrame implements ActionListener{
 		
 	}
 	
+	public void connect() {
+		try {
+			Class.forName(driver); //드라이버 로드 
+			con = DriverManager.getConnection(url, user, password);
+			if(con !=null) {
+				this.setTitle("접속 성공");
+			}else {
+				this.setTitle("접속 실패");
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+		
+	}
+	
+	public void disConnect() {
+		if(con!=null) {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public Connection getCon() {
+		return con;
+	}
+	
 	public static void main(String[] args) {
 		new AppMain();
 
 	}
 
 }
+
+
+
+
+
+

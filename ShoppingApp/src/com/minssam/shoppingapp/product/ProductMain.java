@@ -5,6 +5,7 @@ import java.awt.Canvas;
 import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.sql.PreparedStatement;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -13,10 +14,12 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import com.minssam.shoppingapp.main.AppMain;
 import com.minssam.shoppingapp.main.Page;
 
 //상품관리 메인 페이지
 public class ProductMain extends Page{
+	
 	//서쪽관련
 	JPanel p_west;
 	Choice ch_top;
@@ -55,7 +58,8 @@ public class ProductMain extends Page{
 	JButton bt_regist2;
 	
 	
-	public ProductMain() {
+	public ProductMain(AppMain appMain) {
+		super(appMain);
 		setBackground(Color.YELLOW);
 		
 		//서쪽 영역 생성 
@@ -157,9 +161,25 @@ public class ProductMain extends Page{
 		add(p_center);//센터영역에 부착 
 		
 		//리스너 연결 
+	}
+	
+	//왼쪽 영역의 TopCateogry 가져오기 
+	public void getTopList() {
+		
+		PreparedStatement pstmt=null;
 		
 	}
+	
+	
 }
+
+
+
+
+
+
+
+
 
 
 
