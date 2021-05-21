@@ -1,13 +1,141 @@
 package com.minssam.shoppingapp.product;
 
+import java.awt.BorderLayout;
+import java.awt.Canvas;
+import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Dimension;
 
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import com.minssam.shoppingapp.config.ConfigMain;
 import com.minssam.shoppingapp.main.Page;
 
 //상품관리 메인 페이지
 public class ProductMain extends Page{
+	//서쪽관련
+	JPanel p_west;
+	Choice ch_top;
+	Choice ch_sub;
+	JTextField t_product_name;
+	JTextField t_price;
+	JTextField t_brand;
+	JTextArea t_detail;
+	JScrollPane scroll;
+	JButton bt_web; //웹에서 가져오기
+	JButton bt_file; //로컬 파일에서 가져오기
+	Canvas can;
+	JButton bt_regist;
+	
+	//동쪽관련
+	JPanel p_east;
+	Choice ch_top2;
+	Choice ch_sub2;
+	JTextField t_product_name2;
+	JTextField t_price2;
+	JTextField t_brand2;
+	JTextArea t_detail2;
+	JScrollPane scroll2;
+	JButton bt_web2; //웹에서 가져오기
+	JButton bt_file2; //로컬 파일에서 가져오기
+	Canvas can2;
+	JButton bt_regist2;
+	
+	
 	public ProductMain() {
 		setBackground(Color.YELLOW);
+		
+		//서쪽 영역 생성 
+		p_west= new JPanel();
+		ch_top = new Choice();
+		ch_sub = new Choice();
+		t_product_name = new JTextField();
+		t_price = new JTextField();
+		t_brand = new JTextField();
+		t_detail = new JTextArea();
+		scroll = new JScrollPane(t_detail);
+		bt_web = new JButton("웹에서찾기");
+		bt_file = new JButton("파일찾기");
+		can = new Canvas();
+		bt_regist = new JButton("상품등록");
+		
+		//동쪽 영역 생성 
+		p_east= new JPanel();
+		ch_top2 = new Choice();
+		ch_sub2 = new Choice();
+		t_product_name2 = new JTextField();
+		t_price2 = new JTextField();
+		t_brand2 = new JTextField();
+		t_detail2 = new JTextArea();
+		scroll2 = new JScrollPane(t_detail);
+		bt_web2 = new JButton("웹에서찾기");
+		bt_file2 = new JButton("파일찾기");
+		can2 = new Canvas();
+		bt_regist2 = new JButton("상품등록");
+		
+		
+		//스타일 및 레이아웃 
+		setLayout(new BorderLayout());
+		
+		Dimension d = new Dimension(180,30); //공통 크기
+		//서쪽 관련
+		p_west.setPreferredSize(new Dimension(200, 700));
+		scroll.setPreferredSize(new Dimension(180, 300));
+		ch_top.setPreferredSize(d);
+		ch_sub.setPreferredSize(d);
+		t_product_name.setPreferredSize(d);
+		t_price.setPreferredSize(d);
+		t_brand.setPreferredSize(d);
+		
+		//동쪽관련
+		p_east.setPreferredSize(new Dimension(200, 700));
+		scroll2.setPreferredSize(new Dimension(180, 300));
+		ch_top2.setPreferredSize(d);
+		ch_sub2.setPreferredSize(d);
+		t_product_name2.setPreferredSize(d);
+		t_price2.setPreferredSize(d);
+		t_brand2.setPreferredSize(d);
+		
+		//서쪽조립 
+		p_west.add(ch_top);
+		p_west.add(ch_sub);
+		p_west.add(t_product_name);
+		p_west.add(t_price);
+		p_west.add(t_brand);
+		p_west.add(scroll);
+		p_west.add(bt_web);
+		p_west.add(bt_file);
+		p_west.add(can);
+		p_west.add(bt_regist);
+		
+		//동쪽조립
+		p_east.add(ch_top2);
+		p_east.add(ch_sub2);
+		p_east.add(t_product_name2);
+		p_east.add(t_price2);
+		p_east.add(t_brand2);
+		p_east.add(scroll2);
+		p_east.add(bt_web2);
+		p_east.add(bt_file2);
+		p_east.add(can2);
+		p_east.add(bt_regist2);
+		
+		add(p_west, BorderLayout.WEST);//서쪽영역에 부착 
+		add(p_east, BorderLayout.EAST);//서쪽영역에 부착 
+		
+		//리스너 연결 
+		
 	}
 }
+
+
+
+
+
+
+
+

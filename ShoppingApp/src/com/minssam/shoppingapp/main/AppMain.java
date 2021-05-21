@@ -70,7 +70,6 @@ public class AppMain extends JFrame implements ActionListener{
 		for(int i=0;i<bt_menu.length;i++) {
 			bt_menu[i].addActionListener(this);
 		}
-	
 		
 		//보여주기
 		setBounds(1900, 10, 1200, 700);
