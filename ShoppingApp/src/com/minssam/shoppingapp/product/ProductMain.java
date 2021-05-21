@@ -5,9 +5,12 @@ import java.awt.Canvas;
 import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -34,6 +37,11 @@ public class ProductMain extends Page{
 	JButton bt_file; //로컬 파일에서 가져오기
 	Canvas can;
 	JButton bt_regist;
+	
+	//Choice 컴포넌트는 html의 option  과 달리 텍스트,value 값을 동시에 담을 수 없다..
+	//따라서 우리가 이 부분을 복합 데이터 형태로 직접 만들어서 해결해보자!!
+	ArrayList topList=new ArrayList(); //size 0 즉 아무것도 채워진게 없다
+	
 	
 	//센터관련 
 	JPanel p_center;
@@ -162,6 +170,12 @@ public class ProductMain extends Page{
 		add(p_center);//센터영역에 부착 
 		
 		//리스너 연결 
+		ch_top.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				getSubList();
+			}
+		});
+		
 		
 		getTopList();
 	}
@@ -178,15 +192,28 @@ public class ProductMain extends Page{
 			
 			while(rs.next()){//커서한칸씩 이동하면서 true인 동안..
 				ch_top.add(rs.getString("top_name"));
-				System.out.println(rs.getString("top_name"));
+				topList.add(rs.getString("top_name")); //ArrayList에 아이템 추가!!!
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
 			getAppMain().release(pstmt, rs);
 		}
+		
+		//확인을 위한 로그 
+		for(int i=0;i<topList.size();i++) {
+			String item = (String)topList.get(i);
+			System.out.println(item);
+		}
 	}
 	
+	//왼쪽영역의 subcategory 나오게 
+	public void getSubList() {
+		int topcategory_id=0;
+		String sql="select * from subcategory where topcategory_id="+topcategory_id;
+		
+		System.out.println(sql);		
+	}
 	
 }
 
