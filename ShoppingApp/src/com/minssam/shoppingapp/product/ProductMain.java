@@ -9,10 +9,10 @@ import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import com.minssam.shoppingapp.config.ConfigMain;
 import com.minssam.shoppingapp.main.Page;
 
 //상품관리 메인 페이지
@@ -30,6 +30,15 @@ public class ProductMain extends Page{
 	JButton bt_file; //로컬 파일에서 가져오기
 	Canvas can;
 	JButton bt_regist;
+	
+	//센터관련 
+	JPanel p_center;
+	JPanel p_search; //검색 컴포넌트들 올려놓을 패널 
+	Choice ch_category;//검색 카테고리 선택
+	JTextField t_keyword;//검색어 입력
+	JButton bt_search; 
+	JTable table;
+	JScrollPane scroll_table;
 	
 	//동쪽관련
 	JPanel p_east;
@@ -63,6 +72,15 @@ public class ProductMain extends Page{
 		can = new Canvas();
 		bt_regist = new JButton("상품등록");
 		
+		//센터 영역 생성 
+		p_center = new JPanel();
+		p_search = new JPanel();
+		ch_category = new Choice();
+		t_keyword = new JTextField();
+		bt_search = new JButton("search");
+		table = new JTable(10, 7);
+		scroll_table = new JScrollPane(table);
+		
 		//동쪽 영역 생성 
 		p_east= new JPanel();
 		ch_top2 = new Choice();
@@ -90,6 +108,16 @@ public class ProductMain extends Page{
 		t_product_name.setPreferredSize(d);
 		t_price.setPreferredSize(d);
 		t_brand.setPreferredSize(d);
+		
+		//센터관련 
+		ch_category.setPreferredSize(d);
+		t_keyword.setPreferredSize(new Dimension(380, 30));
+		p_search.add(ch_category);
+		p_search.add(t_keyword);
+		p_search.add(bt_search);
+		p_center.setLayout(new BorderLayout());
+		p_center.add(p_search, BorderLayout.NORTH);//검색 패널을 북쪽에 부착!!
+		p_center.add(scroll_table);
 		
 		//동쪽관련
 		p_east.setPreferredSize(new Dimension(200, 700));
@@ -126,6 +154,7 @@ public class ProductMain extends Page{
 		
 		add(p_west, BorderLayout.WEST);//서쪽영역에 부착 
 		add(p_east, BorderLayout.EAST);//서쪽영역에 부착 
+		add(p_center);//센터영역에 부착 
 		
 		//리스너 연결 
 		
