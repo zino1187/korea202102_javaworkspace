@@ -307,6 +307,7 @@ public class ProductMain extends Page{
 		URL url=null;
 		HttpURLConnection httpCon=null;
 		InputStream is=null; //입력스트림 계열의 최상위 객체
+		FileOutputStream fos=null; //파일을 대상으로 한 출력스트림
 		
 		try {
 			url=new URL(path);
@@ -314,23 +315,32 @@ public class ProductMain extends Page{
 			httpCon.setRequestMethod("GET");
 			
 			is=httpCon.getInputStream();//웹서버로의 요청에 연결된 스트림 얻기!!
+			long time=System.currentTimeMillis();
+			String filename=time+FileManager.getExtend(path, "/");
+			fos = new FileOutputStream("D:\\workspace\\korea202102_javaworkspace\\ShoppingApp\\data\\"+filename);
+			
 			int data=-1;
 			byte[] buff = new byte[1024]; //1kbyte 버퍼 사용
 					
 			while(true) {
 				data=is.read(buff);
 				if(data==-1)break;
-				System.out.println(data);
+				fos.write(buff);
 			}
+			JOptionPane.showMessageDialog(this.getAppMain(), "복사완료");
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}finally {
-			
+			if(is!=null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-		
-		
 	}
 	
 	//로컬 시스템에서 파일 찾아서 이미지 미리 보기 구현 
@@ -348,7 +358,7 @@ public class ProductMain extends Page{
 			try {
 				fis = new FileInputStream(file);
 				long time = System.currentTimeMillis();
-				String filename = time+"."+FileManager.getExtend(file.getAbsolutePath());
+				String filename = time+"."+FileManager.getExtend(file.getAbsolutePath(), "\\");
 				fos = new FileOutputStream("D:\\workspace\\korea202102_javaworkspace\\ShoppingApp\\data\\"+filename); //복사될 경로
 				
 				//입력과 출력스트림이 준비되었으므로, 복사를 시작하자!!!

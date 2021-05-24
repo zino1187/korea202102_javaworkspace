@@ -4,8 +4,8 @@ package com.minssam.shoppingapp.util;
 public class FileManager {
 	
 	//넘겨받은 경로를 통해 확장자만 추출해보기 
-	public static String getExtend(String path) {
-		int lastIndex = path.lastIndexOf("\\"); //넘겨받은 문자열내의 가장 마지막 디렉토리구분자의 위치
+	public static String getExtend(String path, String token) {
+		int lastIndex = path.lastIndexOf(token); //넘겨받은 문자열내의 가장 마지막 디렉토리구분자의 위치
 		//System.out.println(lastIndex);
 		//String str = "korea";
 		//System.out.println(str.subSequence(0, str.length()));
