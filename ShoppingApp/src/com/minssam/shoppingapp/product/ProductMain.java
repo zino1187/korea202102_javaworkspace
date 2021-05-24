@@ -122,6 +122,13 @@ public class ProductMain extends Page{
 		p_center = new JPanel();
 		p_search = new JPanel();
 		ch_category = new Choice();
+		
+		//검색 카테고리 등록
+		ch_category.add("choose category");
+		ch_category.add("product_name");
+		ch_category.add("price");
+		ch_category.add("brand");
+		
 		t_keyword = new JTextField();
 		bt_search = new JButton("search");
 		table = new JTable(new AbstractTableModel() {
@@ -256,6 +263,7 @@ public class ProductMain extends Page{
 		bt_regist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				regist();
+				getProductList();
 			}
 		});
 		
@@ -474,7 +482,9 @@ public class ProductMain extends Page{
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		String sql="select * from product order by product_id desc";
+		String sql="select product_id, sub_name, product_name, price, brand, detail,filename";
+		sql+=" from subcategory s, product p";
+		sql+=" where s.subcategory_id=p.subcategory_id";
 		
 		try {
 			pstmt=this.getAppMain().getCon().prepareStatement(sql
@@ -492,7 +502,7 @@ public class ProductMain extends Page{
 			int index=0;
 			while(rs.next()) {
 				records[index][0]=Integer.toString(rs.getInt("product_id"));
-				records[index][1]=Integer.toString(rs.getInt("subcategory_id"));
+				records[index][1]=rs.getString("sub_name");
 				records[index][2]=rs.getString("product_name");
 				records[index][3]=Integer.toString(rs.getInt("price"));
 				records[index][4]=rs.getString("brand");
