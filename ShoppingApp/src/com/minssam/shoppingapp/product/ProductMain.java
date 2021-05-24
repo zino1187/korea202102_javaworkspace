@@ -17,6 +17,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -300,6 +304,32 @@ public class ProductMain extends Page{
 		
 		//위의 경로를 이용하여, 웹서버에 요청을 시도해본다!! 
 		//HttpURLConnection !!!!
+		URL url=null;
+		HttpURLConnection httpCon=null;
+		InputStream is=null; //입력스트림 계열의 최상위 객체
+		
+		try {
+			url=new URL(path);
+			httpCon=(HttpURLConnection)url.openConnection();
+			httpCon.setRequestMethod("GET");
+			
+			is=httpCon.getInputStream();//웹서버로의 요청에 연결된 스트림 얻기!!
+			int data=-1;
+			byte[] buff = new byte[1024]; //1kbyte 버퍼 사용
+					
+			while(true) {
+				data=is.read(buff);
+				if(data==-1)break;
+				System.out.println(data);
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally {
+			
+		}
+		
 		
 	}
 	
