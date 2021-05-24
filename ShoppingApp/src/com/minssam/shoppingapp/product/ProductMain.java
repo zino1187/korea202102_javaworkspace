@@ -130,7 +130,7 @@ public class ProductMain extends Page{
 		t_price2 = new JTextField();
 		t_brand2 = new JTextField();
 		t_detail2 = new JTextArea();
-		scroll2 = new JScrollPane(t_detail);
+		scroll2 = new JScrollPane(t_detail2);
 		bt_web2 = new JButton("웹에서찾기");
 		bt_file2 = new JButton("파일찾기");
 		can2 = new Canvas();
@@ -233,6 +233,12 @@ public class ProductMain extends Page{
 			}
 		}); 
 		
+		bt_regist.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				regist();
+			}
+		});
+		
 		getTopList();
 	}
 	
@@ -316,23 +322,31 @@ public class ProductMain extends Page{
 			
 			is=httpCon.getInputStream();//웹서버로의 요청에 연결된 스트림 얻기!!
 			long time=System.currentTimeMillis();
-			String filename=time+FileManager.getExtend(path, "/");
+			String filename=time+"."+FileManager.getExtend(path, "/");
 			fos = new FileOutputStream("D:\\workspace\\korea202102_javaworkspace\\ShoppingApp\\data\\"+filename);
 			
 			int data=-1;
-			byte[] buff = new byte[1024]; //1kbyte 버퍼 사용
-					
+			//byte[] b = new byte[1024*1024]; //1M
 			while(true) {
-				data=is.read(buff);
+				data=is.read();
 				if(data==-1)break;
-				fos.write(buff);
+				fos.write(data);
 			}
+			
 			JOptionPane.showMessageDialog(this.getAppMain(), "복사완료");
+			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}finally {
+			if(fos!=null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			if(is!=null) {
 				try {
 					is.close();
@@ -340,6 +354,7 @@ public class ProductMain extends Page{
 					e.printStackTrace();
 				}
 			}
+			
 		}
 	}
 	
@@ -396,6 +411,18 @@ public class ProductMain extends Page{
 	}
 
 	
+	
+	public void regist() {
+		String sql="insert into product(subcategory_id, product_name, price, brand, detail, filename)";
+		sql+=" values(?,?,?,?,?,?)";
+		int index= ch_sub.getSelectedIndex()-1;
+		
+		//얻어진 초이스 컴포넌트의 index를 이용하여, VO가 들어있는 ArrayList의 접근해보자!!
+		Subcategory subcategory=subList.get(index);
+		System.out.println("당신이 등록하려는 상품의 subcategory_id 는 "+ subcategory.getSubcategory_id());
+		
+		
+	}
 }
 
 

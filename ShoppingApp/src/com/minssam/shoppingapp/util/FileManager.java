@@ -14,12 +14,7 @@ public class FileManager {
 		
 		return ext;
 	}
-	
-	public static void main(String[] args) {
-		String result = getExtend("D:\\workspace\\korea202102_jsworkspace\\images\\dog.jpg");
-		System.out.println(result);
-	}
-	
+
 }
 
 
