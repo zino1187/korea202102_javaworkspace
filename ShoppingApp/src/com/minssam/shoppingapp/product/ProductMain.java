@@ -34,6 +34,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.table.AbstractTableModel;
 
 import com.minssam.shoppingapp.main.AppMain;
 import com.minssam.shoppingapp.main.Page;
@@ -88,6 +89,10 @@ public class ProductMain extends Page{
 	JFileChooser chooser;
 	Toolkit kit=Toolkit.getDefaultToolkit();
 	Image image; //등록시 미리보기에 사용할 이미지
+	String filename; //유저의 복사에 의해 생성된 파일명!!!
+	
+	String[] columns={"product_id", "subcategory_id","product_name","price","brand","detail","filename"};//컬럼배열 
+	String[] records={};//레코드배열
 	
 	public ProductMain(AppMain appMain) {
 		super(appMain);
@@ -119,7 +124,17 @@ public class ProductMain extends Page{
 		ch_category = new Choice();
 		t_keyword = new JTextField();
 		bt_search = new JButton("search");
-		table = new JTable(10, 7);
+		table = new JTable(new AbstractTableModel() {
+			public int getRowCount() {
+				return 2;
+			}
+			public int getColumnCount() {
+				return 5;
+			}
+			public Object getValueAt(int rowIndex, int columnIndex) {
+				return "apple";
+			}
+		});
 		scroll_table = new JScrollPane(table);
 		
 		//동쪽 영역 생성 
@@ -322,7 +337,7 @@ public class ProductMain extends Page{
 			
 			is=httpCon.getInputStream();//웹서버로의 요청에 연결된 스트림 얻기!!
 			long time=System.currentTimeMillis();
-			String filename=time+"."+FileManager.getExtend(path, "/");
+			filename=time+"."+FileManager.getExtend(path, "/");
 			fos = new FileOutputStream("D:\\workspace\\korea202102_javaworkspace\\ShoppingApp\\data\\"+filename);
 			
 			int data=-1;
@@ -373,7 +388,7 @@ public class ProductMain extends Page{
 			try {
 				fis = new FileInputStream(file);
 				long time = System.currentTimeMillis();
-				String filename = time+"."+FileManager.getExtend(file.getAbsolutePath(), "\\");
+				filename = time+"."+FileManager.getExtend(file.getAbsolutePath(), "\\");
 				fos = new FileOutputStream("D:\\workspace\\korea202102_javaworkspace\\ShoppingApp\\data\\"+filename); //복사될 경로
 				
 				//입력과 출력스트림이 준비되었으므로, 복사를 시작하자!!!
@@ -413,6 +428,8 @@ public class ProductMain extends Page{
 	
 	
 	public void regist() {
+		PreparedStatement pstmt=null;
+		
 		String sql="insert into product(subcategory_id, product_name, price, brand, detail, filename)";
 		sql+=" values(?,?,?,?,?,?)";
 		int index= ch_sub.getSelectedIndex()-1;
@@ -421,8 +438,47 @@ public class ProductMain extends Page{
 		Subcategory subcategory=subList.get(index);
 		System.out.println("당신이 등록하려는 상품의 subcategory_id 는 "+ subcategory.getSubcategory_id());
 		
+		try {
+			pstmt=this.getAppMain().getCon().prepareStatement(sql);
+			//바인드 변수값 처리 
+			pstmt.setInt(1, subcategory.getSubcategory_id()); //서브 카테고리
+			pstmt.setString(2, t_product_name.getText());//상품명
+			pstmt.setInt(3, Integer.parseInt(t_price.getText()));//가격
+			pstmt.setString(4, t_brand.getText());//브랜드
+			pstmt.setString(5, t_detail.getText());//상세설명
+			pstmt.setString(6, filename);//이미지명
+			
+			//쿼리실행(DML)
+			int result = pstmt.executeUpdate();
+			if(result==1) {
+				JOptionPane.showMessageDialog(this.getAppMain(), "상품 등록성공");
+			}else {
+				JOptionPane.showMessageDialog(this.getAppMain(), "상품 등록실패");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			this.getAppMain().release(pstmt);
+		}
 		
 	}
+	
+	//상품 목록 가져오기 
+	public void getProductList() {
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		
+		String sql="select * from product order by product_id desc";
+		
+		try {
+			pstmt=this.getAppMain().getCon().prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
 
 
