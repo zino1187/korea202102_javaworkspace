@@ -12,12 +12,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -73,6 +78,7 @@ public class ProductMain extends Page{
 	Canvas can2;
 	JButton bt_regist2;
 	
+	JFileChooser chooser;
 	Toolkit kit=Toolkit.getDefaultToolkit();
 	Image image; //등록시 미리보기에 사용할 이미지
 	
@@ -122,6 +128,8 @@ public class ProductMain extends Page{
 		bt_file2 = new JButton("파일찾기");
 		can2 = new Canvas();
 		bt_regist2 = new JButton("상품등록");
+		
+		chooser = new JFileChooser("D:\\workspace\\korea202102_jsworkspace\\images");
 		
 		
 		//스타일 및 레이아웃 
@@ -207,8 +215,7 @@ public class ProductMain extends Page{
 		//파일찾기 버튼과 리스너 연결
 		bt_file.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				image = kit.getImage("D:\\workspace\\korea202102_jsworkspace\\images\\dog.jpg");
-				can.repaint();
+				findLocal();
 			}
 		}); 
 		
@@ -276,6 +283,29 @@ public class ProductMain extends Page{
 			this.getAppMain().release(pstmt, rs);
 		}
 	}
+	
+	//로컬 시스템에서 파일 찾아서 이미지 미리 보기 구현 
+	public void findLocal() {
+		FileInputStream fis=null;
+		FileOutputStream fos=null;
+		
+		if(chooser.showOpenDialog(this.getAppMain())==JFileChooser.APPROVE_OPTION) {
+			File file=chooser.getSelectedFile();
+			
+			image = kit.getImage(file.getAbsolutePath()); //파일의 물리적 풀 경로
+			can.repaint();
+			
+			//유저가 선택한 파일을 data 디렉토리에 복사해보자~~
+			try {
+				fis = new FileInputStream(file);
+				fos = new FileOutputStream("D:\\workspace\\korea202102_javaworkspace\\ShoppingApp\\data\\"); //복사될 경로
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+		};
+	}
+
 	
 }
 
