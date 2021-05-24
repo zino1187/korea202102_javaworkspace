@@ -69,6 +69,8 @@ public class ProductMain extends Page{
 	Choice ch_category;//검색 카테고리 선택
 	JTextField t_keyword;//검색어 입력
 	JButton bt_search; 
+	JButton bt_excel; //엑셀을 이용한 일괄등록
+	
 	JTable table;
 	JScrollPane scroll_table;
 	
@@ -131,6 +133,8 @@ public class ProductMain extends Page{
 		
 		t_keyword = new JTextField();
 		bt_search = new JButton("search");
+		bt_excel = new JButton("엑셀로 등록");
+		
 		table = new JTable(new AbstractTableModel() {
 			public int getRowCount() {
 				return records.length;
@@ -183,10 +187,11 @@ public class ProductMain extends Page{
 		
 		//센터관련 
 		ch_category.setPreferredSize(d);
-		t_keyword.setPreferredSize(new Dimension(380, 30));
+		t_keyword.setPreferredSize(new Dimension(300, 30));
 		p_search.add(ch_category);
 		p_search.add(t_keyword);
 		p_search.add(bt_search);
+		p_search.add(bt_excel);
 		p_center.setLayout(new BorderLayout());
 		p_center.add(p_search, BorderLayout.NORTH);//검색 패널을 북쪽에 부착!!
 		p_center.add(scroll_table);
@@ -264,6 +269,13 @@ public class ProductMain extends Page{
 			public void actionPerformed(ActionEvent e) {
 				regist();
 				getProductList();
+			}
+		});
+		
+		//엑셀버튼과 리스너 연결 
+		bt_excel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				registByExcel();
 			}
 		});
 		
@@ -517,7 +529,14 @@ public class ProductMain extends Page{
 			this.getAppMain().release(pstmt, rs);
 		}
 	}
-	
+	//java가 기본적으로 엑셀을 제어할 수 있는 api가 지원되지 않는다. 따라서 외부의 api를 이용해야 한다 
+	//apache 개발한 라이브러리 이용해보자~
+	// http://apache.org  : 무료 소프트웨어 진영을 이끌고 있는 단체!!   POI  jar
+	public void registByExcel() {
+		/*
+		 * 1) 엑셀파일에 접근부터 해야 한다!! ( 즉 빨대를 꽂아야 한다) 
+		 * */
+	}
 }
 
 
