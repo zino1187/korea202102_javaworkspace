@@ -215,6 +215,13 @@ public class ProductMain extends Page{
 			}
 		});
 		
+		//웹에서 파일 찾기 버튼과 리스너 연결 
+		bt_web.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				findWeb();
+			}
+		});
+		
 		//파일찾기 버튼과 리스너 연결
 		bt_file.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -287,6 +294,15 @@ public class ProductMain extends Page{
 		}
 	}
 	
+	//웹에서 파일 찾아서 이미지 미리보기 구현 
+	public void findWeb() {
+		String path=JOptionPane.showInputDialog(this.getAppMain(),"경로 입력");
+		
+		//위의 경로를 이용하여, 웹서버에 요청을 시도해본다!! 
+		//HttpURLConnection !!!!
+		
+	}
+	
 	//로컬 시스템에서 파일 찾아서 이미지 미리 보기 구현 
 	public void findLocal() {
 		FileInputStream fis=null;
@@ -326,6 +342,7 @@ public class ProductMain extends Page{
 						e.printStackTrace();
 					}
 				}
+				
 				if(fis!=null) {
 					try {
 						fis.close();
