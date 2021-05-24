@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -33,6 +35,7 @@ import com.minssam.shoppingapp.main.AppMain;
 import com.minssam.shoppingapp.main.Page;
 import com.minssam.shoppingapp.model.domain.Subcategory;
 import com.minssam.shoppingapp.model.domain.Topcategory;
+import com.minssam.shoppingapp.util.FileManager;
 
 //상품관리 메인 페이지
 public class ProductMain extends Page{
@@ -298,9 +301,38 @@ public class ProductMain extends Page{
 			//유저가 선택한 파일을 data 디렉토리에 복사해보자~~
 			try {
 				fis = new FileInputStream(file);
-				fos = new FileOutputStream("D:\\workspace\\korea202102_javaworkspace\\ShoppingApp\\data\\"); //복사될 경로
+				long time = System.currentTimeMillis();
+				String filename = time+"."+FileManager.getExtend(file.getAbsolutePath());
+				fos = new FileOutputStream("D:\\workspace\\korea202102_javaworkspace\\ShoppingApp\\data\\"+filename); //복사될 경로
+				
+				//입력과 출력스트림이 준비되었으므로, 복사를 시작하자!!!
+				int data=-1; 
+				byte[] buff = new byte[1024]; //1kbyte 의 버퍼확보
+				while(true) {
+					data=fis.read(buff); //버퍼로 읽었다면,
+					if(data==-1)break;
+					fos.write(buff);//버퍼로 내려쓰자
+				}
+				JOptionPane.showMessageDialog(this.getAppMain(), "복사완료");
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}finally {
+				if(fos!=null) {
+					try {
+						fos.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				if(fis!=null) {
+					try {
+						fis.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}			
 			}
 			
 		};
