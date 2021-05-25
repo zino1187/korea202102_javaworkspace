@@ -750,7 +750,7 @@ public class ProductMain extends Page{
 	//상세보기 구현 
 	public void getDetail() {
 		//선택한 레코드의 product_id 
-		int product_id=(Integer)table.getValueAt(table.getSelectedRow(), 0);
+		String product_id=(String)table.getValueAt(table.getSelectedRow(), 0);
 		
 		//String immuable 특징이 있기 때문에, 즉 문자열 상수이기에 아래와 같이 sql문을 처리하면 
 		//문자열상수가 5개가 생성된다, 즉 sql이 수정되는게 아니다!!!
@@ -764,6 +764,30 @@ public class ProductMain extends Page{
 		sb.append(" product_id="+product_id);
 		
 		System.out.println(sb.toString());
+		
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		
+		try {
+			pstmt=this.getAppMain().getCon().prepareStatement(sb.toString());
+			rs=pstmt.executeQuery(); //select 실행 후 결과 받기 !!!
+			
+			if(rs.next()) { //레코드가 있다면..
+				//우측 영역에 채워넣기!!!
+				t_top.setText(rs.getString("top_name"));
+				t_sub.setText(rs.getString("sub_name"));
+				t_product_name2.setText(rs.getString("product_name"));
+				t_price2.setText(Integer.toString(rs.getInt("price")));
+				t_brand2.setText(rs.getString("brand"));
+				t_detail2.setText(rs.getString("detail"));
+				//우측 켄버스에 이미지 나오게!!!
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			this.getAppMain().release(pstmt, rs);
+		}
+		
 		
 	}
 	
