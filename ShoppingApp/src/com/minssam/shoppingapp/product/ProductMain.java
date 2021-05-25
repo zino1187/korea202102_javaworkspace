@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -82,8 +84,8 @@ public class ProductMain extends Page{
 	
 	//동쪽관련
 	JPanel p_east;
-	Choice ch_top2;
-	Choice ch_sub2;
+	JTextField t_top;
+	JTextField t_sub;
 	JTextField t_product_name2;
 	JTextField t_price2;
 	JTextField t_brand2;
@@ -161,8 +163,8 @@ public class ProductMain extends Page{
 		
 		//동쪽 영역 생성 
 		p_east= new JPanel();
-		ch_top2 = new Choice();
-		ch_sub2 = new Choice();
+		t_top = new JTextField();
+		t_sub = new JTextField();
 		t_product_name2 = new JTextField();
 		t_price2 = new JTextField();
 		t_brand2 = new JTextField();
@@ -205,8 +207,8 @@ public class ProductMain extends Page{
 		//동쪽관련
 		p_east.setPreferredSize(new Dimension(200, 700));
 		scroll2.setPreferredSize(new Dimension(180, 300));
-		ch_top2.setPreferredSize(d);
-		ch_sub2.setPreferredSize(d);
+		t_top.setPreferredSize(d);
+		t_sub.setPreferredSize(d);
 		t_product_name2.setPreferredSize(d);
 		t_price2.setPreferredSize(d);
 		t_brand2.setPreferredSize(d);
@@ -224,8 +226,8 @@ public class ProductMain extends Page{
 		p_west.add(bt_regist);
 		
 		//동쪽조립
-		p_east.add(ch_top2);
-		p_east.add(ch_sub2);
+		p_east.add(t_top);
+		p_east.add(t_sub);
 		p_east.add(t_product_name2);
 		p_east.add(t_price2);
 		p_east.add(t_brand2);
@@ -307,10 +309,22 @@ public class ProductMain extends Page{
 		//검색 버튼과 리스너 연결 
 		bt_search.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				getListBySearch();
+				//검색을 안할 경우 모든 데이터가 나오게 (category 선택안하고, keyword 입력X)
+				if(ch_category.getSelectedIndex()==0 && t_keyword.getText().length()==0) {
+					getProductList();
+				}else {
+					//검색을 하면 검색결과만 나오게..
+					getListBySearch();
+				}
 			}
 		});
 		
+		//테이블과 리스너 연결 
+		table.addMouseListener(new MouseAdapter() {
+			public void mouseReleased(MouseEvent e) {
+				getDetail();
+			}
+		});
 		
 		getTopList(); //상위 카테고리 목록 
 		getProductList();//상품 목록 
@@ -695,7 +709,10 @@ public class ProductMain extends Page{
 		PreparedStatement pstmt=null;
 		ResultSet rs = null;
 		
-		String sql="select * from product where "+category+" like '%"+keyword+"%'  ";
+		String sql="select product_id, sub_name, product_name, price, brand, detail,filename";
+		sql+=" from subcategory s, product p";
+		sql+=" where s.subcategory_id=p.subcategory_id and "+category+" like '%"+keyword+"%'";
+
 
 		try {
 			pstmt=this.getAppMain().getCon().prepareStatement(sql
@@ -729,6 +746,27 @@ public class ProductMain extends Page{
 		}
 		
 	}
+	
+	//상세보기 구현 
+	public void getDetail() {
+		//선택한 레코드의 product_id 
+		int product_id=(Integer)table.getValueAt(table.getSelectedRow(), 0);
+		
+		//String immuable 특징이 있기 때문에, 즉 문자열 상수이기에 아래와 같이 sql문을 처리하면 
+		//문자열상수가 5개가 생성된다, 즉 sql이 수정되는게 아니다!!!
+		//따라서 좀더 메모리 효율을 생각한다면, 수정가능한 문자열처리를 해야 한다 
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append("select product_id,top_name, sub_name, product_name, price, brand, detail,filename");
+		sb.append(" from topcategory t, subcategory s, product p");
+		sb.append(" where t.topcategory_id=s.topcategory_id and");
+		sb.append(" s.subcategory_id = p.subcategory_id and ");
+		sb.append(" product_id="+product_id);
+		
+		System.out.println(sb.toString());
+		
+	}
+	
 }
 
 
