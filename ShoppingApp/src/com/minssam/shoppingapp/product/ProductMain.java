@@ -273,8 +273,27 @@ public class ProductMain extends Page{
 		
 		bt_regist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				regist();
-				getProductList();
+				//유효성 체크 통과되면 아래의 두 메서드 호출!!!
+				//숫자값을 문자로 입력할 경우 문제가 심각함...따라서 이 부분만 체크해보자!!
+				try {
+					Integer.parseInt(t_price.getText()); // ""
+					regist();
+					getProductList();
+				}catch(NumberFormatException e1) {
+					JOptionPane.showMessageDialog(ProductMain.this.getAppMain(),"가격은 숫자를 입력하세요");
+					t_price.setText(""); //기존 입력값 지우고
+					t_price.requestFocus();//포커스 올려놓기
+				}
+				
+				//예외는 에러가 발생할 가능성이 있는 우려되는 코드에 대한 안전장치인데, 
+				//지금까지는 컴파일 타임에 즉 컴파일러에 의해 무조건 처리가 강요되는 예외만을 사용해왔으나
+				//이제부터는 컴파일 타임이 아닌 실행시 즉 런타임시에 관여하는 예외도 있다..
+				//이러한 예외를 런타임예외라 하며, RuntimeException 클래스로부터 상속받은 자식들이다..
+				//강요하지 않는 예외는 개발자의 선택에 의해 처리여부를 결정하면 된다..
+				//대표적인 RuntimeExeception ArrayOutofBoundException
+				
+				//"아래의 코드는 나중에 에러가 날수도 잇어여, 즉 존재하지 않는 요소까지 접근할 경우 프로그램은
+				//비정상 종료될 수 있어요.."
 			}
 		});
 		
@@ -557,9 +576,14 @@ public class ProductMain extends Page{
 		FileInputStream fis=null;
 		XSSFWorkbook workbook=null;
 		PreparedStatement pstmt=null;
+		Connection con=this.getAppMain().getCon();
+		//con.setAutoCommit(false);//자동 커밋 하지마라!!! 즉 커밋은 내가주도해서 하겠다!!
+		//con.setAutoCommit(true);//매 DML마다 무조건 commit해라!!
 		
 		try {
 			fis =new FileInputStream(path);
+			con.setAutoCommit(false);
+			
 			//이 스트림을 통해 내부데이터를 엑셀로 이해할 수 있도록 해석!!! 
 			workbook=new XSSFWorkbook(fis);//엑셀파일을 처리하기 위한 객체 XSSFWorkbook
 			
@@ -606,9 +630,6 @@ public class ProductMain extends Page{
 				String sql="insert into product(subcategory_id,product_name,price,brand,detail,filename)";
 				sql+=" values(?,?,?,?,?,?)";
 				
-				Connection con=this.getAppMain().getCon();
-				//con.setAutoCommit(false);//자동 커밋 하지마라!!! 즉 커밋은 내가주도해서 하겠다!!
-				//con.setAutoCommit(true);//매 DML마다 무조건 commit해라!!
 				
 				pstmt=this.getAppMain().getCon().prepareStatement(sql);
 				pstmt.setInt(1, subcategory_id);
@@ -622,7 +643,8 @@ public class ProductMain extends Page{
 				int result = pstmt.executeUpdate(); 
 				
 			}//바깥for
-
+			
+			con.commit(); //트랜잭션 확정
 			JOptionPane.showMessageDialog(this.getAppMain(), "등록완료");
 			getProductList();
 			
@@ -632,6 +654,12 @@ public class ProductMain extends Page{
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			//이 영역이 만일 DML실패에 의한 에러를 만난 이유로 실행된다면 rollback
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		}finally {
 			if(fis!=null) {
 				try {
@@ -642,6 +670,12 @@ public class ProductMain extends Page{
 			}
 			if(pstmt!=null) {
 				this.getAppMain().release(pstmt);
+			}
+			
+			try {
+				con.setAutoCommit(true); //다시 돌려놓기
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 	}
