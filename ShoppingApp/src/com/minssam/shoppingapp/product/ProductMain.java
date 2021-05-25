@@ -94,15 +94,17 @@ public class ProductMain extends Page{
 	JButton bt_web2; //웹에서 가져오기
 	JButton bt_file2; //로컬 파일에서 가져오기
 	Canvas can2;
-	JButton bt_regist2;
+	JButton bt_del;
 	
 	JFileChooser chooser;
 	Toolkit kit=Toolkit.getDefaultToolkit();
 	Image image; //등록시 미리보기에 사용할 이미지
+	Image image2; //상세보기시 그려질 이미지
 	String filename; //유저의 복사에 의해 생성된 파일명!!!
 	
 	String[] columns={"product_id", "subcategory_id","product_name","price","brand","detail","filename"};//컬럼배열 
 	String[][] records={};//레코드배열
+	int product_id; // 현재 상세보기 중인 product의 pk
 	
 	public ProductMain(AppMain appMain) {
 		super(appMain);
@@ -172,8 +174,13 @@ public class ProductMain extends Page{
 		scroll2 = new JScrollPane(t_detail2);
 		bt_web2 = new JButton("웹에서찾기");
 		bt_file2 = new JButton("파일찾기");
-		can2 = new Canvas();
-		bt_regist2 = new JButton("상품등록");
+		can2 = new Canvas() {
+			public void paint(Graphics g) {
+				g.drawImage(image2, 0,0, 180,180, can2);
+			}
+		};
+		
+		bt_del = new JButton("상품삭제");
 		
 		chooser = new JFileChooser("D:\\workspace\\korea202102_jsworkspace\\images");
 		
@@ -206,12 +213,15 @@ public class ProductMain extends Page{
 		
 		//동쪽관련
 		p_east.setPreferredSize(new Dimension(200, 700));
-		scroll2.setPreferredSize(new Dimension(180, 300));
+		scroll2.setPreferredSize(new Dimension(180, 180));
 		t_top.setPreferredSize(d);
 		t_sub.setPreferredSize(d);
 		t_product_name2.setPreferredSize(d);
 		t_price2.setPreferredSize(d);
 		t_brand2.setPreferredSize(d);
+		can2.setPreferredSize(new Dimension(180, 180));
+		can2.setBackground(Color.YELLOW);
+		
 		
 		//서쪽조립 
 		p_west.add(ch_top);
@@ -235,7 +245,7 @@ public class ProductMain extends Page{
 		p_east.add(bt_web2);
 		p_east.add(bt_file2);
 		p_east.add(can2);
-		p_east.add(bt_regist2);
+		p_east.add(bt_del);
 		
 		add(p_west, BorderLayout.WEST);//서쪽영역에 부착 
 		add(p_east, BorderLayout.EAST);//서쪽영역에 부착 
@@ -323,6 +333,15 @@ public class ProductMain extends Page{
 		table.addMouseListener(new MouseAdapter() {
 			public void mouseReleased(MouseEvent e) {
 				getDetail();
+			}
+		});
+		
+		
+		bt_del.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(JOptionPane.showConfirmDialog(ProductMain.this.getAppMain(), "삭제하시겠어요?")==JOptionPane.OK_OPTION) {
+					deleteProduct();
+				}
 			}
 		});
 		
@@ -749,8 +768,8 @@ public class ProductMain extends Page{
 	
 	//상세보기 구현 
 	public void getDetail() {
-		//선택한 레코드의 product_id 
-		String product_id=(String)table.getValueAt(table.getSelectedRow(), 0);
+		//선택한 레코드의 product_id
+		product_id=Integer.parseInt((String)table.getValueAt(table.getSelectedRow(), 0));
 		
 		//String immuable 특징이 있기 때문에, 즉 문자열 상수이기에 아래와 같이 sql문을 처리하면 
 		//문자열상수가 5개가 생성된다, 즉 sql이 수정되는게 아니다!!!
@@ -780,20 +799,26 @@ public class ProductMain extends Page{
 				t_price2.setText(Integer.toString(rs.getInt("price")));
 				t_brand2.setText(rs.getString("brand"));
 				t_detail2.setText(rs.getString("detail"));
+				
 				//우측 켄버스에 이미지 나오게!!!
+				image2=kit.getImage("D:\\workspace\\korea202102_javaworkspace\\ShoppingApp\\data\\"+rs.getString("filename"));
+				can2.repaint();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
 			this.getAppMain().release(pstmt, rs);
 		}
-		
-		
 	}
 	
+	
+	//상품 삭제 처리 
+	public void deleteProduct() {
+		String sql="delete from product where product_id="+product_id;
+		
+		System.out.println(sql);
+	}
 }
-
-
 
 
 
