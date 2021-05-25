@@ -105,6 +105,7 @@ public class ProductMain extends Page{
 	String[] columns={"product_id", "subcategory_id","product_name","price","brand","detail","filename"};//컬럼배열 
 	String[][] records={};//레코드배열
 	int product_id; // 현재 상세보기 중인 product의 pk
+	String del_file; //현재 상세보기 중인 filename(삭제 대상이 될 수 있슴)
 	
 	public ProductMain(AppMain appMain) {
 		super(appMain);
@@ -799,6 +800,7 @@ public class ProductMain extends Page{
 				t_price2.setText(Integer.toString(rs.getInt("price")));
 				t_brand2.setText(rs.getString("brand"));
 				t_detail2.setText(rs.getString("detail"));
+				del_file= rs.getString("filename");
 				
 				//우측 켄버스에 이미지 나오게!!!
 				image2=kit.getImage("D:\\workspace\\korea202102_javaworkspace\\ShoppingApp\\data\\"+rs.getString("filename"));
@@ -814,9 +816,25 @@ public class ProductMain extends Page{
 	
 	//상품 삭제 처리 
 	public void deleteProduct() {
+		//데이터 삭제 + 파일삭제 
 		String sql="delete from product where product_id="+product_id;
+		PreparedStatement pstmt=null;
 		
-		System.out.println(sql);
+		try {
+			pstmt=this.getAppMain().getCon().prepareStatement(sql);
+			int result=pstmt.executeUpdate(); //DML중 delete 수행
+			if(result >0) {
+				//파일 삭제!!
+				File file=new File("D:\\workspace\\korea202102_javaworkspace\\ShoppingApp\\data\\"+del_file);
+				file.delete(); //파일 삭제
+				getProductList(); //리스트 다시 조회
+				table.updateUI();//화면 갱신
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
 	}
 }
 
