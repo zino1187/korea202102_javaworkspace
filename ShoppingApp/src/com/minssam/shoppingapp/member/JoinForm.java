@@ -1,13 +1,16 @@
 package com.minssam.shoppingapp.member;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -63,7 +66,38 @@ public class JoinForm extends Page{
 		add(p_container);
 		
 		//리스너
+		bt_join.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				regist();
+			}
+		});
+		
 		//보이기
+	}
+	
+	//회원등록 
+	public void regist() {
+		String sql="insert into member(m_id, m_pass, m_name) values(?,?,?)";
+		PreparedStatement pstmt=null;
+		
+		try {
+			pstmt=this.getAppMain().getCon().prepareStatement(sql);
+
+			pstmt.setString(1, t_id.getText());
+			pstmt.setString(2, new String( t_pass.getPassword()));
+			pstmt.setString(3, t_name.getText());
+			
+			int result = pstmt.executeUpdate(); 
+			if(result==1) {
+				JOptionPane.showMessageDialog(this.getAppMain(), "가입 성공");
+			}else {
+				JOptionPane.showMessageDialog(this.getAppMain(), "가입 실패");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			this.getAppMain().release(pstmt);
+		}
 	}
 }
 
