@@ -191,6 +191,15 @@ public class AppMain extends JFrame implements ActionListener{
 		}
 	}
 	
+	
+	public boolean isSession() {
+		return session;
+	}
+
+	public void setSession(boolean session) {
+		this.session = session;
+	}
+
 	public static void main(String[] args) {
 		new AppMain();
 

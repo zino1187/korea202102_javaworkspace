@@ -66,6 +66,12 @@ public class JoinForm extends Page{
 		add(p_container);
 		
 		//리스너
+		bt_login.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JoinForm.this.getAppMain().showHide(4);
+			}
+		});
+		
 		bt_join.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				regist();
