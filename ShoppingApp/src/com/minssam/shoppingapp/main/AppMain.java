@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 
 import com.minssam.shoppingapp.config.ConfigMain;
 import com.minssam.shoppingapp.customer.CustomerMain;
+import com.minssam.shoppingapp.member.JoinForm;
 import com.minssam.shoppingapp.member.LoginForm;
 import com.minssam.shoppingapp.member.MemberMain;
 import com.minssam.shoppingapp.order.OrderMain;
@@ -31,7 +32,7 @@ public class AppMain extends JFrame implements ActionListener{
 	JPanel p_center;//페이지를 교체하기 위한 패널(페이지들 간의 공존을 위해)
 	
 	//페이지 선언 
-	Page[] pages = new Page[6];
+	Page[] pages = new Page[7];
 	
 	//데이터베스 관련 
 	String driver="com.mysql.jdbc.Driver"; // 8.xx 인 경우 com.mysql.jdbc.cj.Driver
@@ -60,6 +61,7 @@ public class AppMain extends JFrame implements ActionListener{
 		pages[3] = new CustomerMain(this);//고객센터
 		pages[4] = new LoginForm(this);//로그인
 		pages[5] = new ConfigMain(this);//환경설정
+		pages[6] = new JoinForm(this);//회원가입폼
 		
 		//스타일
 		

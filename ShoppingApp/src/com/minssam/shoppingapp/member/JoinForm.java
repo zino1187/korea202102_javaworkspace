@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -17,16 +15,17 @@ import javax.swing.JTextField;
 import com.minssam.shoppingapp.main.AppMain;
 import com.minssam.shoppingapp.main.Page;
 
-public class LoginForm extends Page{
+public class JoinForm extends Page{
 	JPanel p_container;//BorderLayout 
 	JPanel p_center; //form 
 	JPanel p_south; //버튼 영역 
-	JLabel la_id, la_pass;
+	JLabel la_id, la_pass, la_name;
 	JTextField t_id; 
 	JPasswordField t_pass;
+	JTextField t_name;
 	JButton bt_login, bt_join;
 	
-	public LoginForm(AppMain appMain) {
+	public JoinForm(AppMain appMain) {
 		super(appMain);
 		
 		//생성
@@ -35,21 +34,25 @@ public class LoginForm extends Page{
 		p_south = new JPanel();
 		la_id = new JLabel("ID");
 		la_pass = new JLabel("Password");
+		la_name = new JLabel("Name");
 		t_id = new JTextField();
 		t_pass = new JPasswordField();
+		t_name = new JTextField();
 		bt_login = new JButton("Login");
-		bt_join = new JButton("회원가입");
+		bt_join = new JButton("등록");
 		
 		//스타일 레이아웃
 		p_container.setPreferredSize(new Dimension(250, 85));
 		p_container.setLayout(new BorderLayout());
-		p_center.setLayout(new GridLayout(2, 2));
+		p_center.setLayout(new GridLayout(3, 2));
 		
 		//조립
 		p_center.add(la_id);
 		p_center.add(t_id);
 		p_center.add(la_pass);
 		p_center.add(t_pass);
+		p_center.add(la_name);
+		p_center.add(t_name);
 		
 		p_south.add(bt_login);
 		p_south.add(bt_join);
@@ -60,13 +63,6 @@ public class LoginForm extends Page{
 		add(p_container);
 		
 		//리스너
-		bt_join.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//새롭게 추가된 index 6번째인 회원가입 폼을 호출하자!!
-				LoginForm.this.getAppMain().showHide(6);
-			}
-		});
-		
 		//보이기
 	}
 }
