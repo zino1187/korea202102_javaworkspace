@@ -304,6 +304,14 @@ public class ProductMain extends Page{
 			}
 		});
 		
+		//검색 버튼과 리스너 연결 
+		bt_search.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				getListBySearch();
+			}
+		});
+		
+		
 		getTopList(); //상위 카테고리 목록 
 		getProductList();//상품 목록 
 	}
@@ -678,6 +686,48 @@ public class ProductMain extends Page{
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	//검색 결과 가져오기 
+	public void getListBySearch() {
+		String category=ch_category.getSelectedItem();
+		String keyword = t_keyword.getText();
+		PreparedStatement pstmt=null;
+		ResultSet rs = null;
+		
+		String sql="select * from product where "+category+" like '%"+keyword+"%'  ";
+
+		try {
+			pstmt=this.getAppMain().getCon().prepareStatement(sql
+					, ResultSet.TYPE_SCROLL_INSENSITIVE
+					, ResultSet.CONCUR_READ_ONLY);
+			
+			rs=pstmt.executeQuery();
+			rs.last(); //커서를 마지막레코드로 보냄 
+			int total = rs.getRow(); //레코드 번호 구하기
+			
+			//JTable이 참조하고 있는 records라는 이차원배열의 값을, rs를 이용하여 갱신해보자!
+			records=new String[total][columns.length];
+			
+			rs.beforeFirst(); //커서 위치 제자리로 
+			int index=0;
+			while(rs.next()) {
+				records[index][0]=Integer.toString(rs.getInt("product_id"));
+				records[index][1]=rs.getString("sub_name");
+				records[index][2]=rs.getString("product_name");
+				records[index][3]=Integer.toString(rs.getInt("price"));
+				records[index][4]=rs.getString("brand");
+				records[index][5]=rs.getString("detail");
+				records[index][6]=rs.getString("filename");
+				index++;
+			}
+			table.updateUI();//JTable 갱신 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			this.getAppMain().release(pstmt, rs);
+		}
+		
 	}
 }
 
