@@ -161,6 +161,22 @@ public class ProductMain extends Page{
 			public Object getValueAt(int row, int col) {
 				return records[row][col];
 			}
+			//JTable의 각셀의 값을 지정
+			//셀을 편집한 후, 엔터치는 순간 아래의 메서드 호출됨
+			public void setValueAt(Object value, int row, int col) {
+				System.out.println(row+","+col+" 번째 셀의 데이터는 "+value+"로 바꿀께요");
+				records[row][col]=(String)value;
+				updateProduct();
+			}
+			
+			//다른 메서드와 마찬가지로, 아래의 isCellEditable메서드도 호출자가 JTable이다
+			public boolean isCellEditable(int row, int col) {
+				if(col==0) { //첫번째 열인 product_id만 읽기전용으로 세팅
+					return false;
+				}else {
+					return true;					
+				}
+			}
 		});
 		scroll_table = new JScrollPane(table);
 		
@@ -828,13 +844,46 @@ public class ProductMain extends Page{
 				File file=new File("D:\\workspace\\korea202102_javaworkspace\\ShoppingApp\\data\\"+del_file);
 				file.delete(); //파일 삭제
 				getProductList(); //리스트 다시 조회
-				table.updateUI();//화면 갱신
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	//상품 한건 수정 
+	public void updateProduct() {
+		//System.out.println("수정할 product_id는 "+product_id);
 		
-		
+		String sql="update product set product_name=?, price=?, brand=?, detail=?,filename=?";
+		sql+=" where product_id=?";
+		PreparedStatement pstmt=null;
+		try {
+			pstmt=this.getAppMain().getCon().prepareStatement(sql);
+			
+			String product_name= (String)table.getValueAt(table.getSelectedRow(), 2);
+			int price= Integer.parseInt((String)table.getValueAt(table.getSelectedRow(), 3));
+			String brand= (String)table.getValueAt(table.getSelectedRow(), 4);
+			String detail= (String)table.getValueAt(table.getSelectedRow(), 5);
+			String filename= (String)table.getValueAt(table.getSelectedRow(), 6);
+			
+			pstmt.setString(1,product_name);//product_name
+			pstmt.setInt(2, price);//price
+			pstmt.setString(3, brand);//brand
+			pstmt.setString(4, detail);//detail
+			pstmt.setString(5, filename);//filename
+			pstmt.setInt(6, product_id);//product_id
+			
+			int result=pstmt.executeUpdate(); //DML 실행
+			if(result>0) {
+				JOptionPane.showMessageDialog(this.getAppMain(), "수정완료");
+			}else {
+				JOptionPane.showMessageDialog(this.getAppMain(), "수정실패");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			this.getAppMain().release(pstmt);
+		}
 	}
 }
 
