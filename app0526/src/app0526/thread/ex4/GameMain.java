@@ -1,11 +1,14 @@
 package app0526.thread.ex4;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-public class GameMain extends JFrame{
+public class GameMain extends JFrame implements ActionListener{
 	GamePanel gamePanel;
 	JMenuBar bar; //게임 제어 패널
 	JMenu m_control; //설정
@@ -30,9 +33,25 @@ public class GameMain extends JFrame{
 		
 		add(gamePanel);
 		
+		//리스너와 연결 
+		item_start.addActionListener(this);
+		item_pause.addActionListener(this);
+		item_exit.addActionListener(this);
+		
 		pack();//내부 컨텐츠 크기까지 줄어듦
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==item_start) {
+			
+		}else if(e.getSource()==item_pause) {
+			
+		}else if(e.getSource()==item_exit) {
+			gamePanel.gameFlag=false;//게임 쓰레드 dead 
+			System.exit(0); //프로세스 종료
+		}
 	}
 	
 	public static void main(String[] args) {
