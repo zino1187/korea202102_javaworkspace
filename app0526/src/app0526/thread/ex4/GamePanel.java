@@ -19,6 +19,8 @@ public class GamePanel extends JPanel{
 	Image bgImg;//배경이미지 
 	
 	Hero hero;
+	String[] enemyPath= {"e1.png","e2.png","e3.png","e4.png","e5.png"};
+	Enemy[] enemyArray=new Enemy[5];
 	
 	public GamePanel() {
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -39,6 +41,7 @@ public class GamePanel extends JPanel{
 		
 		createBg();
 		createHero();
+		createEnemy();
 		
 		gameThread.start();
 	}
@@ -51,16 +54,36 @@ public class GamePanel extends JPanel{
 	
 	//주인공 생성
 	public void createHero() {
-		hero = new Hero(this,"plane2.png",100,200,80,45,0,0);
+		hero = new Hero(this,"plane2.png",100,200,80,45,1,0);
+	}
+	
+	//적군생성 
+	public void createEnemy() {
+		//Enemy(GamePanel gamePanel, String path, int x, int y , int width, int height, int velX, int velY) {
+		for(int i=0;i<enemyPath.length;i++) {
+			enemyArray[i] = new Enemy(this, enemyPath[i], 800, i*95, 65, 60, -1, 0);
+		}
 	}
 	
 	protected void paintComponent(Graphics g) {
 		g.drawImage(bgImg ,0 , 0, WIDTH, HEIGHT, this);
+		
 		hero.render(g);
+		
+		for(int i=0;i<enemyArray.length;i++) {
+			enemyArray[i].render(g);
+		}
 	}
 	
 	public void gameLoop() {
-		//System.out.println("gameLoop operating...");
+		//게임에 등장하는 모든 오브젝트를 움직이게 하려면,  tick(), render() 호출 
+		hero.tick();
+		
+		for(int i=0;i<enemyArray.length;i++) {
+			enemyArray[i].tick();
+		}
+		
+		this.repaint(); //패널을 다시 그린다!!!
 	}
 }
 
