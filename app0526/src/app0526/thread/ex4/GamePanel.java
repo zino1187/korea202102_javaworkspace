@@ -38,6 +38,7 @@ public class GamePanel extends JPanel{
 		};
 		
 		createBg();
+		createHero();
 		
 		gameThread.start();
 	}
@@ -50,7 +51,7 @@ public class GamePanel extends JPanel{
 	
 	//주인공 생성
 	public void createHero() {
-		hero = new Hero(100,200,80,45,0,0);
+		hero = new Hero(this,"plane2.png",100,200,80,45,0,0);
 	}
 	
 	protected void paintComponent(Graphics g) {
