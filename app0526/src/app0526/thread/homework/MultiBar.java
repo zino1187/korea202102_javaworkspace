@@ -1,4 +1,4 @@
-package app0526.homework;
+package app0526.thread.homework;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;

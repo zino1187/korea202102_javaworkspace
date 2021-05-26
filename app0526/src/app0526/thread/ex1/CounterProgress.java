@@ -1,4 +1,4 @@
-package app0526.ex1;
+package app0526.thread.ex1;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
