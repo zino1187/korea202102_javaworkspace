@@ -18,6 +18,8 @@ public class GamePanel extends JPanel{
 	ImageManager imageManager=new ImageManager();
 	Image bgImg;//배경이미지 
 	
+	Hero hero;
+	
 	public GamePanel() {
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		
@@ -40,13 +42,20 @@ public class GamePanel extends JPanel{
 		gameThread.start();
 	}
 	
+	//배경 생성
 	public void createBg() {
 		ImageIcon icon = imageManager.getScaledIcon("bg.jpg", WIDTH, HEIGHT);
 		bgImg=icon.getImage(); //배경 이미지 얻기!!
 	}
 	
+	//주인공 생성
+	public void createHero() {
+		hero = new Hero(100,200,80,45,0,0);
+	}
+	
 	protected void paintComponent(Graphics g) {
 		g.drawImage(bgImg ,0 , 0, WIDTH, HEIGHT, this);
+		hero.render(g);
 	}
 	
 	public void gameLoop() {
