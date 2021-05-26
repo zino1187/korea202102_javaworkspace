@@ -14,13 +14,7 @@ public class MultiBar extends JFrame{
 	JProgressBar bar1;
 	JProgressBar bar2;
 	JProgressBar bar3;
-	
-	Thread t1;
-	Thread t2;
-	Thread t3;
-	
-	int n1,n2,n3; //0
-	
+
 	public MultiBar() {
 		bar1 = new JProgressBar();
 		bar2 = new JProgressBar();
@@ -50,11 +44,13 @@ public class MultiBar extends JFrame{
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	public void startBar() {
-		MyThread m1=new MyThread(bar1);
-		MyThread m2=new MyThread(bar2);
-		MyThread m3=new MyThread(bar3);
+		MyThread m1=new MyThread(bar1,1);
+		MyThread m2=new MyThread(bar2,5);
+		MyThread m3=new MyThread(bar3,7);
 		
-		
+		m1.start();
+		m2.start();
+		m3.start();
 	}
 	public static void main(String[] args) {
 		new MultiBar();
