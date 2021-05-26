@@ -2,6 +2,14 @@ package app0526.thread.ex3;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -9,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
+import util.FileManager;
 import util.ImageManager;
 
 //웹상의 자원을 수집하고, 다운로드 받는 진행 상황을 프로그래스바로 표시하자!!
@@ -18,6 +27,9 @@ public class DownLoader extends JFrame{
 	JProgressBar bar;
 	ImageManager imageManager=new ImageManager();
 	ImageIcon icon; //Icon 인터페이스를 구현한 클래스
+	InputStream fis;
+	FileOutputStream fos;
+	HttpURLConnection httpCon; //http 요청을 위한 객체
 	
 	public DownLoader() {
 		t_url = new JTextField();
@@ -39,20 +51,55 @@ public class DownLoader extends JFrame{
 		setLayout(new FlowLayout());
 		t_url.setPreferredSize( new Dimension(470,35));
 		bar.setPreferredSize( new Dimension(470,35));
+		bt.setPreferredSize( new Dimension(45,38));
+		bt.setBorder(null);
 		
 		//add
 		add(t_url);
 		add(bt);
 		add(bar);
 		
+		//리스너 연결
+		bt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				downLoad();
+			}
+		});
+		
+		
 		setVisible(true);
 		setBounds(2400, 100, 500, 140);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
-	public void test() {
+	
+	public void downLoad() {
+		try {
+			URL url = new URL(t_url.getText()); //사용자가 입력한  url 주소를 이용한 URL 객체생성
+			httpCon =(HttpURLConnection)url.openConnection();
+			httpCon.setRequestMethod("GET");
+			fis=httpCon.getInputStream(); //서버의 자원과 입력 스트림 연결!!
+			
+			//파일명 결정 
+			long time = System.currentTimeMillis();
+			String ext = FileManager.getExtend(t_url.getText(), "/");
+			
+			fos=new FileOutputStream(""); //파일명 결정
+			
+			int data=-1;
+			while(true) {
+				data=fis.read(); //1byte 읽기!!
+				if(data==-1)break;
+				
+			}
+			
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
-	public void test2() {
-	}
+
 	public static void main(String[] args) {
 		new DownLoader(); 
 		
