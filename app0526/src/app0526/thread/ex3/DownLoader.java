@@ -68,6 +68,7 @@ public class DownLoader extends JFrame{
 				thread = new Thread() {
 					public void run() {
 						downLoad();
+						JOptionPane.showMessageDialog(DownLoader.this, "다운로드 완료");
 					}
 				};
 				thread.start();
@@ -88,7 +89,8 @@ public class DownLoader extends JFrame{
 			fis=httpCon.getInputStream(); //서버의 자원과 입력 스트림 연결!!
 			
 			//파일의 총 크기를 구한다
-			int total = fis.available();
+			int total = httpCon.getContentLength();
+			System.out.println("total 은 "+total);
 			
 			//파일명 결정 
 			long time = System.currentTimeMillis();
@@ -101,12 +103,19 @@ public class DownLoader extends JFrame{
 			
 			while(true) {
 				data=fis.read(); //1byte 읽기!!
-				count++;
+				
 				//count와  total의 비율을 이용하여 백분율을 구한 후, 프로그래스바에 반영해보자!!
+				float percent = (count/(float)total)*100;
+				System.out.println("percent = "+(int)percent);
+				
+				bar.setValue((int)percent);
+				
 				if(data==-1)break;
+				count++; //데이터가 존재할때만 증가시키자!!
 				fos.write(data); //1byte 출력 
 			}
-			JOptionPane.showMessageDialog(this, "다운로드 완료");
+			System.out.println("count는 "+count);
+			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -126,6 +135,7 @@ public class DownLoader extends JFrame{
 					e.printStackTrace();
 				}
 			}
+			
 		}
 		
 	}
