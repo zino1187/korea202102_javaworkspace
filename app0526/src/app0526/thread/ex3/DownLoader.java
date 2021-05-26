@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +32,7 @@ public class DownLoader extends JFrame{
 	InputStream fis;
 	FileOutputStream fos;
 	HttpURLConnection httpCon; //http 요청을 위한 객체
+	Thread thread;
 	
 	public DownLoader() {
 		t_url = new JTextField();
@@ -64,7 +65,12 @@ public class DownLoader extends JFrame{
 		//리스너 연결
 		bt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				downLoad();
+				thread = new Thread() {
+					public void run() {
+						downLoad();
+					}
+				};
+				thread.start();
 			}
 		});
 		
@@ -81,6 +87,9 @@ public class DownLoader extends JFrame{
 			httpCon.setRequestMethod("GET");
 			fis=httpCon.getInputStream(); //서버의 자원과 입력 스트림 연결!!
 			
+			//파일의 총 크기를 구한다
+			int total = fis.available();
+			
 			//파일명 결정 
 			long time = System.currentTimeMillis();
 			String ext = FileManager.getExtend(t_url.getText(), "/");
@@ -88,8 +97,12 @@ public class DownLoader extends JFrame{
 			fos=new FileOutputStream("D:\\workspace\\korea202102_javaworkspace\\app0526\\data\\"+filename); //파일명 결정
 			
 			int data=-1;
+			int count=0;
+			
 			while(true) {
 				data=fis.read(); //1byte 읽기!!
+				count++;
+				//count와  total의 비율을 이용하여 백분율을 구한 후, 프로그래스바에 반영해보자!!
 				if(data==-1)break;
 				fos.write(data); //1byte 출력 
 			}
