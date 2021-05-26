@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,7 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
@@ -82,20 +84,35 @@ public class DownLoader extends JFrame{
 			//파일명 결정 
 			long time = System.currentTimeMillis();
 			String ext = FileManager.getExtend(t_url.getText(), "/");
-			
-			fos=new FileOutputStream(""); //파일명 결정
+			String filename=time+"."+ext;
+			fos=new FileOutputStream("D:\\workspace\\korea202102_javaworkspace\\app0526\\data\\"+filename); //파일명 결정
 			
 			int data=-1;
 			while(true) {
 				data=fis.read(); //1byte 읽기!!
 				if(data==-1)break;
-				
+				fos.write(data); //1byte 출력 
 			}
-			
+			JOptionPane.showMessageDialog(this, "다운로드 완료");
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+			if(fos!=null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if(fis!=null) {
+				try {
+					fis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		
 	}
