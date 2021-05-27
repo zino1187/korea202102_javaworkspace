@@ -3,8 +3,14 @@ package app0527.network.echo.gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -49,18 +55,53 @@ public class ChatServer extends JFrame implements ActionListener{
 	//서버가동 
 	public void startServer() {
 		int port = Integer.parseInt(t_port.getText());
+		BufferedReader buffr=null; //버퍼처리된 문자기반의 입력스트림 
+		BufferedWriter buffw=null; //버퍼처리된 문자기반의 출력스트림 
 		
 		try {
 			server = new ServerSocket(port);
 			area.append("서버 생성\n접속자 기다리는 중...\n");
 			
-			//접속자 감지
-			server.accept(); //이 코드에의해 접속자가 발견될때까지 실행부는 무한대기에 빠진다..특히나 무한대기에 빠지게될 
+			//접속자 감지 후, 대화용 쓰레드 반환받자!!
+			Socket socket = server.accept(); //이 코드에의해 접속자가 발견될때까지 실행부는 무한대기에 빠진다..특히나 무한대기에 빠지게될 
 			//실행부가 메인쓰레드라면, 메인쓰레드의 고유 업무인 이벤트처리, gui 처리 등을 할수가 없다!! 따라서 프로그램이 먹통된다!!
-			area.append("접속자 감지!\n");
+			InetAddress addr=socket.getInetAddress();
+			String ip=addr.getHostAddress();
+			area.append(ip+" 님 접속 감지!\n");
 			
+			
+			buffr = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			buffw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+			
+			//클라이언트의 메시지 받기!!!
+			String data = null;
+			
+			while(true) {
+				data=buffr.readLine(); //한줄 입력 받기!!
+				
+				area.append(data+"\n");//채팅 대화를 모니터링 할 수 있도록 area출력
+				
+				buffw.write(data+"\n"); //문자열의 끝을 표시 
+				buffw.flush(); //버퍼기반의 출력스트림에서는 , 버퍼를 비워야 안전!
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+			if(buffw!=null) {
+				try {
+					buffw.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if(buffr!=null) {
+				try {
+					buffr.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
 		}
 		
 	}
