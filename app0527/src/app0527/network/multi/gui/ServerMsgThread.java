@@ -1,4 +1,4 @@
-package app0527.network.uni.gui;
+package app0527.network.multi.gui;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

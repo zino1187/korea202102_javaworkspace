@@ -1,4 +1,4 @@
-package app0527.network.uni.gui;
+package app0527.network.multi.gui;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -30,6 +31,12 @@ public class ChatServer extends JFrame implements ActionListener{
 	
 	ServerSocket server; //접속을 감지하는 소켓 
 	Thread thread; //접속자 감지를 처리하기 위한 쓰레드, 얘가 없다면? 메인쓰레드가 대기상태에 빠진다..
+	
+	//접속하는 클라이언트마다 생성되는 ServerMsgThread의 인스턴스를 컬렉션에 모아놓고
+	//필요할때 그 주소값을 참조하여, ServerMsgThread를 제어해보자!!
+	//특히 이  컬렉션을 이용하면, 현재 서버에 접속한 접속자 수 등을 알 수 있다..
+	//추후 반복문을 이용할 예정이므로, 순서있는 집합을 다루는 List 형을 사용하겠다!!
+	Vector clientList;
 	
 	public ChatServer() {
 		//생성 
