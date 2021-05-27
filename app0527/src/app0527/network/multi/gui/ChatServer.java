@@ -36,7 +36,7 @@ public class ChatServer extends JFrame implements ActionListener{
 	//필요할때 그 주소값을 참조하여, ServerMsgThread를 제어해보자!!
 	//특히 이  컬렉션을 이용하면, 현재 서버에 접속한 접속자 수 등을 알 수 있다..
 	//추후 반복문을 이용할 예정이므로, 순서있는 집합을 다루는 List 형을 사용하겠다!!
-	Vector clientList;
+	Vector<ServerMsgThread> clientList=new Vector<ServerMsgThread>();
 	
 	public ChatServer() {
 		//생성 
@@ -79,9 +79,13 @@ public class ChatServer extends JFrame implements ActionListener{
 				area.append(ip+" 님 접속 감지!\n");
 				
 				//곧 사라질 Socket을 얼릉 ServerMsgThread의 인스턴스로 보관해놓자!!
-				ServerMsgThread msgThread = new ServerMsgThread(socket, area);
+				ServerMsgThread msgThread = new ServerMsgThread(socket, area, clientList);
 				msgThread.start(); //각각 알아서 움직여라!! jvm님이 알아서 때려줌..
 				
+				//메시지쓰레드 객체를 명단에 넣어두자!! 
+				clientList.add(msgThread);
+				
+				area.append("현재까지 접속자는 "+clientList.size()+"명\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

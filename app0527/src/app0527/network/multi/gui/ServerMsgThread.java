@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.Vector;
 
 import javax.swing.JTextArea;
 
@@ -17,10 +18,12 @@ public class ServerMsgThread extends Thread{
 	BufferedReader buffr;
 	BufferedWriter buffw;
 	JTextArea area;
+	Vector<ServerMsgThread> clientList;
 	
-	public ServerMsgThread(Socket socket, JTextArea area) {
+	public ServerMsgThread(Socket socket, JTextArea area, Vector<ServerMsgThread> clientList) {
 		this.socket=socket;
 		this.area=area;
+		this.clientList=clientList;
 		
 		try {
 			//소켓으로부터 2가닥의 실(입력, 출력스트림)을 뽑아놓자!!
@@ -36,7 +39,12 @@ public class ServerMsgThread extends Thread{
 		String msg=null; 
 		try {
 			msg=buffr.readLine();
-			send(msg);
+			//아래의 코드를 , 개선해보자
+			//현재 서버에 접속한 모든~~send() 메서드 호출! Multi Casting
+			for(int i=0;i<clientList.size();i++) {
+				ServerMsgThread msgThread=clientList.get(i);
+				msgThread.send(msg);
+			}
 			area.append(msg+"\n");//서버로그에 메시지 남기기
 		} catch (IOException e) {
 			e.printStackTrace();
