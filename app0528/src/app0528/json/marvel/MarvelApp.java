@@ -47,28 +47,49 @@ public class MarvelApp extends JFrame{
 	
 	public MarvelApp() {
 		//컬럼
-		column.add("movie_id");
-		column.add("url");
-		column.add("title");
-		column.add("category_name");
-		column.add("release_date");
-		column.add("running_time");
-		column.add("budget");
-		column.add("gross");
+		column.add("movie_id"); //col=0
+		column.add("url"); //col=1
+		column.add("title"); //2
+		column.add("category_name");//3
+		column.add("release_date");//4
+		column.add("running_time");//5
+		column.add("budget");//6
+		column.add("gross");//7
 		
 		table = new JTable(new AbstractTableModel() {
 			
 			public int getRowCount() {
-				return data.size();
+				return data.size(); //2
 			}
 			public int getColumnCount() {
-				return column.size();
+				return column.size(); //3
 			}
 			public String getColumnName(int col) {
 				return column.get(col);   //배열의 경우엔  배열[col]
 			}
-			public Object getValueAt(int rowIndex, int columnIndex) {
-				return "hi";
+			public Object getValueAt(int row, int col) {
+				// 이차원배열이었다면 각 셀에 들어갈 데이터를 이렇게 records[row][col] 뽑으면 된다!!
+				JSONObject json=data.get(row);
+				String value=null;
+				
+				if(col==0) {
+					value=Long.toString((Long)json.get("movie_id"));
+				}else if(col==1) {
+					value=(String)json.get("url");
+				}else if(col==2) {
+					value=(String)json.get("title");
+				}else if(col==3) {
+					value=(String)json.get("category_name");
+				}else if(col==4) {
+					value=(String)json.get("release_date");
+				}else if(col==5) {
+					value=Long.toString((Long)json.get("running_time"));
+				}else if(col==6) {
+					value=(String)json.get("budget");
+				}else if(col==7) {
+					value=(String)json.get("gross");
+				}
+				return value;
 			}
 		});
 		
