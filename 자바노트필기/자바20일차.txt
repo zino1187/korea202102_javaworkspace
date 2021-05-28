@@ -24,7 +24,7 @@ HttpURLConnection 객체의 getContentLength()
    - cmd 기반으로 제작 app0527.network.echo.cmd
    - GUI 기반 제작 app0527.network.echo.gui
 
-2.유니케스팅 
+2.유니케스팅 (Uni)
    - cmd 기반으로 제작
    - GUI 기반 제작
 
