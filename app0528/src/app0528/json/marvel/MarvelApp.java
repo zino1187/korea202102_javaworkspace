@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.AbstractTableModel;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -39,8 +41,37 @@ public class MarvelApp extends JFrame{
 	JButton bt;
 	FileReader reader;
 	
+	//이차원배열보다 유연하게 데이터를 처리할 수 있는 Vector를 이용한 JTable을 구현해본다!
+	Vector<JSONObject> data=new Vector<JSONObject>(); //테이블에 채워질 데이터
+	Vector<String> column=new Vector<String>(); //테이블의 컬럼정보
+	
 	public MarvelApp() {
-		table = new JTable();
+		//컬럼
+		column.add("movie_id");
+		column.add("url");
+		column.add("title");
+		column.add("category_name");
+		column.add("release_date");
+		column.add("running_time");
+		column.add("budget");
+		column.add("gross");
+		
+		table = new JTable(new AbstractTableModel() {
+			
+			public int getRowCount() {
+				return data.size();
+			}
+			public int getColumnCount() {
+				return column.size();
+			}
+			public String getColumnName(int col) {
+				return column.get(col);   //배열의 경우엔  배열[col]
+			}
+			public Object getValueAt(int rowIndex, int columnIndex) {
+				return "hi";
+			}
+		});
+		
 		scroll = new JScrollPane(table);
 		p_east = new JPanel();
 		can = new Canvas() {
@@ -92,6 +123,13 @@ public class MarvelApp extends JFrame{
 			
 			JSONArray movieArray=(JSONArray)obj.get("marvel"); //영화 배열 받기
 			System.out.println("마블의 총 영화수는 "+movieArray.size());
+			
+			for(int i=0;i<movieArray.size();i++) {
+				JSONObject movie=(JSONObject)movieArray.get(i); //영화 1편 반환!!
+				//data 백터에 영화1편 넣기!! 
+				data.add(movie);
+			}
+			table.updateUI();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
