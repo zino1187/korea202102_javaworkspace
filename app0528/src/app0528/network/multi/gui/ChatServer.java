@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -28,6 +29,8 @@ public class ChatServer extends JFrame{
 	 * 3.Runnable 인터페이스를 구현
 	 * */
 	Thread serverThread; //메인메서드 대신 서버의 접속자 감지를 위한 무한대기를 처리할 쓰레드
+	Vector<ServerMsgThread> clientList; //접속자가 발생했을때, 이 접속자와 통신을 하게 될 ServerMsgThread의 인스턴스를 담게될 백터
+							//이 벡터를 통해, 접속자의 수,  ServerMsgThread의 주소값을 이용한 제어 등이 가능..
 	
 	public ChatServer() {
 		//생성 
@@ -36,6 +39,7 @@ public class ChatServer extends JFrame{
 		bt = new JButton("서버가동");
 		area = new JTextArea();
 		scroll  =new JScrollPane(area);
+		clientList = new Vector<ServerMsgThread>();
 		
 		//add
 		p_north.add(t_port);
@@ -72,6 +76,12 @@ public class ChatServer extends JFrame{
 				Socket socket = server.accept(); //접속자 감지를 위한 대기!!(메인 쓰레드를 절대로 이용하지 말자)
 				String ip = socket.getInetAddress().getHostAddress();
 				area.append(ip+"님 접속\n");
+				
+				ServerMsgThread msgThread= new ServerMsgThread(socket, this);//대화용 쓰레드 생성 
+				msgThread.start(); //대화용 쓰레드 동작 시작!! (Runnable로 진입시킴)
+				
+				clientList.add(msgThread);//접속자 명단에 추가하기!!!
+				area.append("현재 접속자 "+clientList.size()+"명\n");
 			}
 			
 		} catch (IOException e) {

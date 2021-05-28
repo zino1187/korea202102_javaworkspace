@@ -3,6 +3,8 @@ package app0528.network.multi.gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -26,6 +28,7 @@ public class ChatClient extends JFrame{
 	JButton bt_send;
 	
 	Socket socket;
+	ClientMsgThread msgThread;
 	
 	public ChatClient() {
 		p_north = new JPanel();
@@ -55,6 +58,26 @@ public class ChatClient extends JFrame{
 			}
 		});
 		
+		bt_send.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String msg= t_input.getText();
+				msgThread.send(msg);
+				t_input.setText(""); //입력값 초기화
+			}
+		});
+		
+		//엔터쳤을때도 메시지 보내기 
+		t_input.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
+				if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+					String msg= t_input.getText();
+					msgThread.send(msg);
+					t_input.setText(""); //입력값 초기화
+				}
+			}
+		});
+		
+		
 		//보이기 
 		setVisible(true);
 		setBounds(2200, 100, 300, 400);
@@ -67,6 +90,11 @@ public class ChatClient extends JFrame{
 		
 		try {
 			socket = new Socket(ip, port); //접속시도~!!
+			
+			 
+			msgThread=new ClientMsgThread(this);//클라이언트 전용 대화쓰레드 생성
+			msgThread.start(); // run() 메서드 수행 --> listen()  청취 무한루프 시작!!
+			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
