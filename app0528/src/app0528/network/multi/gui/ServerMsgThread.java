@@ -31,7 +31,11 @@ public class ServerMsgThread extends Thread{
 		String msg=null;
 		try {
 			msg=buffr.readLine(); //클라이언트가 보낸 메시지 듣기!!!
-			send(msg); //다시 클라이언트에게 보내기!! 
+			//서버에 접속한 모든 유저의 send(msg) 호출!!
+			for(int i=0;i<chatServer.clientList.size();i++) {
+				ServerMsgThread msgThread=chatServer.clientList.get(i); //벡터의 각 요소에 들어있는 쓰레드 꺼내기!!!
+				msgThread.send(msg); //다시 클라이언트에게 보내기!! 
+			}
 			chatServer.area.append(msg+"\n");//서버의 로그에 남기기
 		} catch (IOException e) {
 			e.printStackTrace();
