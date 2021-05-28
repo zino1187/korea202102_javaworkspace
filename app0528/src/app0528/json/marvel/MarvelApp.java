@@ -4,12 +4,18 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -44,6 +50,10 @@ public class MarvelApp extends JFrame{
 	//이차원배열보다 유연하게 데이터를 처리할 수 있는 Vector를 이용한 JTable을 구현해본다!
 	Vector<JSONObject> data=new Vector<JSONObject>(); //테이블에 채워질 데이터
 	Vector<String> column=new Vector<String>(); //테이블의 컬럼정보
+	
+	//툴킷으로 가능한지? 이미지 아이콘으로 가능한지?
+	Toolkit kit=Toolkit.getDefaultToolkit();
+	Image img;
 	
 	public MarvelApp() {
 		//컬럼
@@ -96,7 +106,11 @@ public class MarvelApp extends JFrame{
 		scroll = new JScrollPane(table);
 		p_east = new JPanel();
 		can = new Canvas() {
+			public void paint(Graphics g) {
+				g.drawImage(img, 0, 0, 240, 270, can);
+			}
 		};
+		
 		t_title = new JTextField(13);
 		t_date = new JTextField(13);
 		t_gross = new JTextField(13);
@@ -125,9 +139,37 @@ public class MarvelApp extends JFrame{
 			}
 		});
 		
+		table.addMouseListener(new MouseAdapter() {
+			public void mouseReleased(MouseEvent e) {
+				//클릭한 곳의 데이터 추출하기!!
+				String url = (String)table.getValueAt( table.getSelectedRow() , 1);
+				
+				String title=(String)table.getValueAt( table.getSelectedRow() , 2);
+				String release_date=(String)table.getValueAt( table.getSelectedRow() , 4);
+				String gross=(String)table.getValueAt( table.getSelectedRow() , 7);
+				
+				t_title.setText(title);
+				t_date.setText(release_date);
+				t_gross.setText(gross);
+				
+				drawImage(url);
+			}
+		});
+		
 		setBounds(2400, 0, 850, 600);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+	
+	//선택한 영화의  url을 이용하여,  canvas에 이미지 그려넣기!!
+	public void drawImage(String path) {
+		try {
+			URL url = new URL(path);
+			img = kit.getImage(url);
+			can.repaint();//변경된 이미지를 켄버스가 다시 그리도록 요청 
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void load() {
