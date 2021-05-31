@@ -21,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 //공지게시판 구현하기 
 public class NoticeApp extends JFrame{
@@ -56,6 +58,8 @@ public class NoticeApp extends JFrame{
 		
 		p_center = new JPanel();
 		table = new JTable(model = new NoticeModel()); //TableModel을 .java로 빼서 처리해보자!!
+		table.getModel().addTableModelListener(model);
+		
 		scroll = new JScrollPane(table);
 		p_south = new JPanel();
 		bt_del = new JButton("삭제");
@@ -230,6 +234,10 @@ public class NoticeApp extends JFrame{
 	public static void main(String[] args) {
 		new NoticeApp();
 	}
+
+
+
+	
 }
 
 
