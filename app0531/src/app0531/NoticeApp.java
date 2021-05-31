@@ -10,6 +10,7 @@ import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -41,6 +42,7 @@ public class NoticeApp extends JFrame{
 	String user="root";
 	String password="1234";
 	Connection con;
+	NoticeModel model;
 	
 	public NoticeApp() {
 		
@@ -52,7 +54,7 @@ public class NoticeApp extends JFrame{
 		bt_regist = new JButton("등록");	
 		
 		p_center = new JPanel();
-		table = new JTable(); //TableModel을 .java로 빼서 처리해보자!!
+		table = new JTable(model = new NoticeModel()); //TableModel을 .java로 빼서 처리해보자!!
 		scroll = new JScrollPane(table);
 		p_south = new JPanel();
 		bt_del = new JButton("삭제");
@@ -91,7 +93,8 @@ public class NoticeApp extends JFrame{
 		setBounds(0,100,600,450);
 		setVisible(true);
 		
-		connect();
+		connect();//디비 접속하기
+		getList(); //목록 가져오기
 	}
 	
 	//mysql 접속
@@ -141,6 +144,21 @@ public class NoticeApp extends JFrame{
 	}
 	
 	//목록
+	public void getList() {
+		String sql="select * from notice order by notice_id desc";
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		
+		try {
+			pstmt=con.prepareStatement(sql);
+			rs=pstmt.executeQuery(); //쿼리 수행후 결과집합 가져오기 
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
 	
 	//수정
 	
