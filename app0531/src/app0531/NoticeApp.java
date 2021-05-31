@@ -3,10 +3,13 @@ package app0531;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -79,6 +82,12 @@ public class NoticeApp extends JFrame{
 			}
 		});
 		
+		bt_regist.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				regist();
+			}
+		});
+		
 		setBounds(0,100,600,450);
 		setVisible(true);
 		
@@ -107,11 +116,51 @@ public class NoticeApp extends JFrame{
 			e.printStackTrace();
 		}
 	}
+	//Create(=insert) Read(=select) Update Delete
+	//등록
+	public void regist() {
+		String sql="insert into notice(title,writer,content) values(?,?,?)";
+		PreparedStatement pstmt=null;
+		
+		try {
+			pstmt=con.prepareStatement(sql);
+			pstmt.setString(1, t_title.getText());
+			pstmt.setString(2, t_writer.getText());
+			pstmt.setString(3, t_content.getText());
+			int result=pstmt.executeUpdate();
+			if(result==1) {
+				JOptionPane.showMessageDialog(this, "등록성공");
+			}else {
+				JOptionPane.showMessageDialog(this, "등록실패");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			release(pstmt);
+		}
+	}
+	
+	//목록
+	
+	//수정
+	
+	//삭제
+	
 	
 	public void release(Connection con) {
 		if(con!=null) {
 			try {
 				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void release(PreparedStatement pstmt) {
+		if(pstmt!=null) {
+			try {
+				pstmt.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
