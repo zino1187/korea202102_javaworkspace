@@ -153,6 +153,18 @@ public class NoticeApp extends JFrame{
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery(); //쿼리 수행후 결과집합 가져오기 
 			
+			while(rs.next()) { //커서 한칸 전진
+				Notice notice = new Notice();//게시물 한건을 담게될 VO 생성 empty 상태임
+				notice.setNotice_id(rs.getInt("notice_id"));
+				notice.setTitle(rs.getString("title"));
+				notice.setWriter(rs.getString("writer"));
+				notice.setContent(rs.getString("content"));
+				notice.setHit(rs.getInt("hit"));
+				notice.setRegdate(rs.getString("regdate"));
+				
+				model.data.add(notice);//한건의 레코드를 담은 VO를 벡터에 추가하자!!!
+			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
