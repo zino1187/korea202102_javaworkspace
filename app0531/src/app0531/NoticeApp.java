@@ -56,7 +56,6 @@ public class NoticeApp extends JFrame{
 		add(p_west, BorderLayout.WEST);
 		
 		p_center.add(scroll);
-		p_center.add(p_south, BorderLayout.SOUTH);
 		p_south.add(bt_del);
 		p_center.add(p_south, BorderLayout.SOUTH);
 		add(p_center);
