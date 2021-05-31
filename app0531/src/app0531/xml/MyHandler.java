@@ -1,5 +1,7 @@
 package app0531.xml;
 
+import java.util.Vector;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -15,6 +17,9 @@ public class MyHandler extends DefaultHandler{
 	boolean isAge;
 	boolean isAddr;
 	
+	Vector<Member> memberList; 
+	Member member;
+	
 	//각 노드를 만날때마다 호출되는 메서드를 재정의해보자!!!
 	public void startDocument() throws SAXException {
 		System.out.println("문서의 시작입니다");
@@ -24,6 +29,19 @@ public class MyHandler extends DefaultHandler{
 	public void startElement(String uri, String name, String tag, Attributes attributes) throws SAXException {
 		System.out.print("<"+tag+">");
 		
+		if(tag.equals("members")) { 
+			isMembers=true;//실행부가 members태그를 지나갈때...
+			memberList = new Vector<Member>();
+		}else if(tag.equals("member")) { //한명의 회원의 시작~~따라서 VO를 준비하자!!
+			isMember=true; //지나간다 표시 
+			member = new Member();
+		}else if(tag.equals("name")) {
+			isName=true; //지나간다 표시
+		}else if(tag.equals("age")) {
+			isAge=true;
+		}else if(tag.equals("addr")) {
+			isAddr=true;
+		}
 		
 	}
 	
@@ -31,14 +49,43 @@ public class MyHandler extends DefaultHandler{
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		String data = new String(ch, start, length);
 		System.out.print(data);
+		
+		
+		if(isName) { //현재 실행부가 name 시작 태그를 막 지나친 상태라면...
+			member.setName(data);
+		}else if(isAge) { //나이 넣기
+			member.setAge(Integer.parseInt(data));
+		}else if(isAddr) {//주소 넣기
+			member.setAddr(data);
+		}
+		
 	}
 
 	public void endElement(String uri, String localName, String tag) throws SAXException {
 		System.out.print("</"+tag+">");
+		
+		if(tag.equals("name")) {
+			isName=false;
+		}else if(tag.equals("age")) {
+			isAge=false;
+		}else if(tag.equals("addr")) {
+			isAddr=false;
+		}else if(tag.equals("member")) {
+			isMember=false;
+			memberList.add(member);
+		}else if(tag.equals("members")) {
+			isMembers=false;
+		}
 	}
 	
 	public void endDocument() throws SAXException {
-		System.out.println("문서의 끝입니다");
+		System.out.println("문서의 끝입니다, 최종적으로 분석된 회원수는 "+memberList.size());
+		
+		//모든 회원 출력해보기 
+		for(Member obj : memberList) {
+			System.out.println("회원이름:"+obj.getName()+", 나이:"+obj.getAge()+",주소:"+obj.getAddr());
+		}
+		
 	}
 }
 
