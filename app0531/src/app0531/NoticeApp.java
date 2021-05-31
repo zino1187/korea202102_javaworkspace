@@ -39,6 +39,7 @@ public class NoticeApp extends JFrame{
 	JScrollPane scroll;
 	JPanel p_south;
 	JButton bt_del;
+	JButton bt_list;
 	
 	//데이터베이스 관련
 	String url="jdbc:mysql://localhost:3306/javase";
@@ -57,12 +58,12 @@ public class NoticeApp extends JFrame{
 		bt_regist = new JButton("등록");	
 		
 		p_center = new JPanel();
-		table = new JTable(model = new NoticeModel()); //TableModel을 .java로 빼서 처리해보자!!
-		table.getModel().addTableModelListener(model);
+		table = new JTable(); 
 		
 		scroll = new JScrollPane(table);
 		p_south = new JPanel();
 		bt_del = new JButton("삭제");
+		bt_list = new JButton("목록");
 		
 		//스타일
 		p_west.setPreferredSize(new Dimension(200, 450));
@@ -78,6 +79,7 @@ public class NoticeApp extends JFrame{
 		
 		p_center.add(scroll);
 		p_south.add(bt_del);
+		p_south.add(bt_list);
 		p_center.add(p_south, BorderLayout.SOUTH);
 		add(p_center);
 		
@@ -92,6 +94,11 @@ public class NoticeApp extends JFrame{
 		bt_regist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				regist();
+			}
+		});
+		
+		bt_list.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				getList(); //목록 가져오기
 				table.updateUI();
 			}
@@ -101,8 +108,6 @@ public class NoticeApp extends JFrame{
 		setVisible(true);
 		
 		connect();//디비 접속하기
-		getList(); //목록 가져오기
-		table.updateUI();
 	}
 	
 	//mysql 접속
@@ -157,6 +162,7 @@ public class NoticeApp extends JFrame{
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		ResultSetMetaData meta; //컬럼 정보 등을 가져오기 위한 객체
+		model = new NoticeModel();
 		
 		try {
 			pstmt=con.prepareStatement(sql);
@@ -183,6 +189,11 @@ public class NoticeApp extends JFrame{
 				model.data.add(notice);//한건의 레코드를 담은 VO를 벡터에 추가하자!!!
 			}
 			
+			//Model에 들어있는 메서드들은, Table에 해당 모델 적용시점에 호출되는 것을 알 수 있다..
+			//이때 JTable 원하는 정보를 모델로 부터 얻어간다!!
+			table.setModel(model); //JTable의 생성자에서 모델을 결정하는게 아니라, 생성된 모델중 원하는 모델을
+											//테이블에 적용시키고 싶을때
+			table.updateUI();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -239,13 +250,3 @@ public class NoticeApp extends JFrame{
 
 	
 }
-
-
-
-
-
-
-
-
-
-
