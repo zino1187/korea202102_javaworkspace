@@ -39,7 +39,8 @@ public class NoticeApp extends JFrame{
 	JScrollPane scroll;
 	JPanel p_south;
 	JButton bt_del;
-	JButton bt_list;
+	JButton bt_list;//게시판 목록 버튼
+	JButton bt_member; //회원목록 버튼
 	
 	//데이터베이스 관련
 	String url="jdbc:mysql://localhost:3306/javase?characterEncoding=UTF-8";
@@ -63,7 +64,8 @@ public class NoticeApp extends JFrame{
 		scroll = new JScrollPane(table);
 		p_south = new JPanel();
 		bt_del = new JButton("삭제");
-		bt_list = new JButton("목록");
+		bt_list = new JButton("게시판 목록");
+		bt_member = new JButton("회원 목록");
 		
 		//스타일
 		p_west.setPreferredSize(new Dimension(200, 450));
@@ -80,6 +82,7 @@ public class NoticeApp extends JFrame{
 		p_center.add(scroll);
 		p_south.add(bt_del);
 		p_south.add(bt_list);
+		p_south.add(bt_member);
 		p_center.add(p_south, BorderLayout.SOUTH);
 		add(p_center);
 		
@@ -103,6 +106,14 @@ public class NoticeApp extends JFrame{
 				table.updateUI();
 			}
 		});
+		
+		bt_member.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				getMemberList(); //회원목록 가져오기
+				table.updateUI();
+			}
+		});
+		
 		
 		setBounds(0,100,600,450);
 		setVisible(true);
@@ -205,6 +216,12 @@ public class NoticeApp extends JFrame{
 	
 	//삭제
 	
+	
+	//회원목록 가져오기 
+	public void getMemberList() {
+		
+		
+	}
 	
 	public void release(Connection con) {
 		if(con!=null) {
