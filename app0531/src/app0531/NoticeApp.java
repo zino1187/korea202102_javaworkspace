@@ -42,7 +42,7 @@ public class NoticeApp extends JFrame{
 	JButton bt_list;
 	
 	//데이터베이스 관련
-	String url="jdbc:mysql://localhost:3306/javase";
+	String url="jdbc:mysql://localhost:3306/javase?characterEncoding=UTF-8";
 	String user="root";
 	String password="1234";
 	Connection con;

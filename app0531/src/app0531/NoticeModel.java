@@ -25,9 +25,29 @@ public class NoticeModel extends AbstractTableModel{
 		return column.get(col);  
 	}
 	public Object getValueAt(int row, int col) {
-		System.out.println("getValueAt("+row+", "+col+")");
-		return "apple";
+		//System.out.println("getValueAt("+row+", "+col+")");
+		//row로 벡터의 index를 접근한다!!
+		String value=null;
+		Notice notice=data.get(row);
+		
+		if(col==0) {
+			value=Integer.toString(notice.getNotice_id());
+		}else if(col==1) {
+			value=notice.getTitle();
+		}else if(col==2) {
+			value=notice.getWriter();
+		}else if(col==3) {
+			value=notice.getContent();
+		}else if(col==4) {
+			value=notice.getRegdate();
+		}else if(col==5) {
+			value=Integer.toString(notice.getHit());  
+		}
+		return value;
 	}
-	
 
 }
+
+
+
+
