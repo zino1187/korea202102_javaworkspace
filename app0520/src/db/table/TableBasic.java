@@ -37,7 +37,7 @@ public class TableBasic extends JFrame{
 		add(scroll);
 		
 		setVisible(true);
-		setBounds(2400, 100, 500, 250);
+		setBounds(0, 100, 500, 250);
 		//setDefaultCloseOperation(EXIT_ON_CLOSE);//자원을 해제시킬 작업이 없기 때문에 이용가능...
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
