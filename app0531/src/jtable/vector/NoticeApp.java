@@ -1,4 +1,4 @@
-package app0531;
+package jtable.vector;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

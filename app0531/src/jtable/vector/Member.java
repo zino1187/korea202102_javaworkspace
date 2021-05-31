@@ -1,4 +1,4 @@
-package app0531;
+package jtable.vector;
 
 //아래의 Member VO의 인스턴스 1개가 담을 수 있는 레코드 수는? 1개 !!!
 public class Member {
