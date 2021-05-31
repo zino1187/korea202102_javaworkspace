@@ -5,9 +5,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -29,7 +33,14 @@ public class NoticeApp extends JFrame{
 	JPanel p_south;
 	JButton bt_del;
 	
+	//데이터베이스 관련
+	String url="jdbc:mysql://localhost:3306/javase";
+	String user="root";
+	String password="1234";
+	Connection con;
+	
 	public NoticeApp() {
+		
 		//생성
 		p_west = new JPanel();
 		t_title = new JTextField(16); 
@@ -64,13 +75,60 @@ public class NoticeApp extends JFrame{
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0); //프로세스 종료
+				release(con);
 			}
 		});
 		
 		setBounds(0,100,600,450);
 		setVisible(true);
+		
+		connect();
 	}
+	
+	//mysql 접속
+	public void connect() {
+		/*
+		 1) 드라이버 로드
+		 2) 접속
+		 3) 쿼리수행
+		 4) 접속끊기 
+		 */
+		try {
+			Class.forName("com.mysql.jdbc.Driver");//1) 드라이버 로드
+			con=DriverManager.getConnection(url, user, password);//2) 접속
+			if(con!=null) {
+				this.setTitle("접속 성공");
+			}else {
+				JOptionPane.showMessageDialog(this, "DB에 접속할 수 없습니다");
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void release(Connection con) {
+		if(con!=null) {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public static void main(String[] args) {
 		new NoticeApp();
 	}
 }
+
+
+
+
+
+
+
+
+
+
