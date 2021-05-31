@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -87,6 +88,8 @@ public class NoticeApp extends JFrame{
 		bt_regist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				regist();
+				getList(); //목록 가져오기
+				table.updateUI();
 			}
 		});
 		
@@ -95,6 +98,7 @@ public class NoticeApp extends JFrame{
 		
 		connect();//디비 접속하기
 		getList(); //목록 가져오기
+		table.updateUI();
 	}
 	
 	//mysql 접속
@@ -148,10 +152,20 @@ public class NoticeApp extends JFrame{
 		String sql="select * from notice order by notice_id desc";
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
+		ResultSetMetaData meta; //컬럼 정보 등을 가져오기 위한 객체
 		
 		try {
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery(); //쿼리 수행후 결과집합 가져오기 
+			meta = rs.getMetaData(); //rs가 존재해야 메타정보를 얻을 수 있다!!
+			
+			//컬럼의 수, 컬럼의 이름 구해서 모델에 적용해보기!!
+			int col_count = meta.getColumnCount(); //컬럼수
+			for(int i=1;i<=col_count;i++) {
+				String name=meta.getColumnName(i);
+				System.out.println(name);
+				model.column.add(name); //모델객체가 보유한 벡터에 컬럼명 추가!!
+			}
 			
 			while(rs.next()) { //커서 한칸 전진
 				Notice notice = new Notice();//게시물 한건을 담게될 VO 생성 empty 상태임
@@ -167,9 +181,9 @@ public class NoticeApp extends JFrame{
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			release(pstmt, rs);
 		}
-		
-		
 	}
 	
 	//수정
@@ -188,6 +202,22 @@ public class NoticeApp extends JFrame{
 	}
 	
 	public void release(PreparedStatement pstmt) {
+		if(pstmt!=null) {
+			try {
+				pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	public void release(PreparedStatement pstmt, ResultSet rs) {
+		if(rs!=null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		if(pstmt!=null) {
 			try {
 				pstmt.close();
