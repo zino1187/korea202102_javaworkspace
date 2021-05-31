@@ -21,8 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 
 //공지게시판 구현하기 
 public class NoticeApp extends JFrame{
@@ -219,8 +217,42 @@ public class NoticeApp extends JFrame{
 	
 	//회원목록 가져오기 
 	public void getMemberList() {
+		String sql="select * from member";
+		PreparedStatement pstmt=null;
+		ResultSet rs = null;
+		ResultSetMetaData meta=null;
+		MemberModel memberModel=null;
 		
-		
+		try {
+			pstmt=con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			meta = rs.getMetaData();
+			memberModel = new MemberModel();
+			
+			//컬럼 정보 채우기 
+			for(int i=1;i<=meta.getColumnCount();i++) {
+				String name=meta.getColumnName(i);
+				memberModel.column.add(name);//컬럼구성
+			}
+			
+			//레코드 채우기 
+			while(rs.next()) {
+				Member member = new Member();//empty상태의 VO생성 
+				member.setMember_id(rs.getInt("member_id"));
+				member.setUser_id(rs.getString("user_id"));
+				member.setPassword(rs.getString("password"));
+				member.setName(rs.getString("name"));
+				member.setRegdate(rs.getString("regdate"));
+				
+				memberModel.data.add(member); 
+			}
+			table.setModel(memberModel); // JTable에 모델 적용, 이 순간부터 JTable은 Model의 
+														//메서드를 호출하여, 데이터를 채워나간다!!
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			release(pstmt, rs);
+		}
 	}
 	
 	public void release(Connection con) {
