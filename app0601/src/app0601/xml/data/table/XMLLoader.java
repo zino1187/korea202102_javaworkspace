@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 public class XMLLoader {
+	HttpURLConnection conn;
 	
 	public String load(String keyword) throws IOException{
 		String key="TPK6sq5VdCOFrijK99CmJHQCEVer9GwK4sxLvP6ED6dBExrBc6FO298QjQadJsw7C4sDZ8yBXJfsYZ%2FVT6LG0A%3D%3D";
@@ -55,12 +56,16 @@ public class XMLLoader {
         
         //GET방식 요청
         URL url = new URL(urlBuilder.toString());
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-type", "application/json");
         System.out.println("Response code: " + conn.getResponseCode());
 		
 		return conn.getInputStream();  //생성된 태그를 반환
 	}
-
+	public void close() {
+		if(conn!=null) {
+			conn.disconnect();
+		}
+	}
 }

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -24,6 +25,7 @@ public class MountainApp extends JFrame{
 	JTable table;
 	JScrollPane scroll;
 	XMLLoader loader;
+	MountainHandler handler;
 	
 	public MountainApp() {
 		//생성
@@ -57,25 +59,27 @@ public class MountainApp extends JFrame{
 	public void searchData(){
 		try {
 			//1.URL을 통해 xml String 을 로드
-			String xml = loader.load(t_input.getText());
-			System.out.println(xml);
+			InputStream is = loader.loadFromStream(t_input.getText());
 			
 			//2.로드된 xml String을 해석(파싱)하여 JTable출력
-			parseData(xml);
+			parseData(is);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	//String화된 xml을 넘겨받아 파싱을 수행하는 메서드 정의
-	public void parseData(String xml) {
+	public void parseData(InputStream is) {
 		SAXParserFactory factory=SAXParserFactory.newInstance();
 		try {
 			SAXParser saxParser=factory.newSAXParser();
 			
+			saxParser.parse(is, handler = new MountainHandler());
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
