@@ -111,11 +111,6 @@ public class ChatClient extends JFrame{
 			e.printStackTrace();
 		}
 	}
-	
-	public static void main(String[] args) {
-		new ChatClient();
-
-	}
 
 }
 

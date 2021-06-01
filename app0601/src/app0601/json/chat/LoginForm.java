@@ -8,11 +8,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -73,7 +76,14 @@ public class LoginForm extends JFrame{
 		//이벤트 연결 
 		bt_login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				loginCheck();
+				
+				if(loginCheck()==null) { //로그인 인증 메서드 호출 결과가 null이면 로그인 실패!!
+					JOptionPane.showMessageDialog(LoginForm.this, "로그인 정보가 올바르지 않습니다");
+				}else{
+					//채팅창 띄우고, 회원정보 전달!!!
+					new ChatClient();
+					LoginForm.this.setVisible(false);//현재 창은 안보이게..
+				};
 			}
 		});
 		
@@ -110,6 +120,55 @@ public class LoginForm extends JFrame{
 			e.printStackTrace();
 		}
 	}
+	
+	//로그인 처리 
+	public Member loginCheck() {
+		String sql="select * from member where user_id=? and password=?"; //and 조건 
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		Member member=null; //반환할 것이므로..
+		
+		try {
+			pstmt=con.prepareStatement(sql);
+			pstmt.setString(1, t_id.getText()); //아이디
+			pstmt.setString(2, t_pass.getText());//패스워드
+			
+			rs=pstmt.executeQuery(); //ResultSet 반환!!
+			
+			//레코드가 있다면, 즉 로그인이 인증되었다면 커서 한칸 전진이 가능하는 것임 
+			if(rs.next()) {
+				//로그인창은 닫고, 채팅창을 띄워야 함!!, 단 rs에 들어있는 회원정보를 VO에 담기도 하자!!
+				member= new Member(); //Empty 상태임 
+
+				member.setMember_id(rs.getInt("member_id"));
+				member.setUser_id(rs.getString("user_id"));
+				member.setPassword(rs.getString("password"));
+				member.setName(rs.getString("name"));
+				member.setRegdate(rs.getString("regdate"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			if(rs!=null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(pstmt!=null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		
+		return member;
+	}
+	
 	
 	public void release(Connection con) {
 		if(con !=null) {
