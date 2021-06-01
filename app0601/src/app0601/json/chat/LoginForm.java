@@ -76,12 +76,13 @@ public class LoginForm extends JFrame{
 		//이벤트 연결 
 		bt_login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Member member=loginCheck();
 				
-				if(loginCheck()==null) { //로그인 인증 메서드 호출 결과가 null이면 로그인 실패!!
+				if(member==null) { //로그인 인증 메서드 호출 결과가 null이면 로그인 실패!!
 					JOptionPane.showMessageDialog(LoginForm.this, "로그인 정보가 올바르지 않습니다");
 				}else{
 					//채팅창 띄우고, 회원정보 전달!!!
-					new ChatClient();
+					new ChatClient(member);
 					LoginForm.this.setVisible(false);//현재 창은 안보이게..
 				};
 			}

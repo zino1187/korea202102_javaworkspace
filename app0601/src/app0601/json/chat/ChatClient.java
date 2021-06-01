@@ -31,8 +31,11 @@ public class ChatClient extends JFrame{
 	JButton bt_send;
 	Socket socket;
 	ClientMsgThread msgThread;
+	Member member;
 	
-	public ChatClient() {
+	public ChatClient(Member member) {
+		this.member=member; //넘겨받은 회원정보 
+		
 		p_north = new JPanel();
 		t_ip = new JTextField("192.168.55.227",10);
 		t_port = new JTextField(5);
