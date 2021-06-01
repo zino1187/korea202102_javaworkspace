@@ -3,8 +3,10 @@ package app0601.xml.data.table;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -74,7 +76,9 @@ public class MountainApp extends JFrame{
 		try {
 			SAXParser saxParser=factory.newSAXParser();
 			
-			saxParser.parse(is, handler = new MountainHandler());
+			saxParser.parse(is, handler = new MountainHandler()); //파싱시작!!!!
+			
+			
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
