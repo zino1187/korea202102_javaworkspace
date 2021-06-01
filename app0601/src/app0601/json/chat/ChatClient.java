@@ -1,4 +1,4 @@
-package gui.backup;
+package app0601.json.chat;
 
 import java.awt.BorderLayout;
 
@@ -45,7 +45,7 @@ public class ChatClient extends JFrame{
 		
 		//보이기 
 		setVisible(true);
-		setBounds(0, 100, 300, 400);
+		setBounds(2200, 100, 300, 400);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
