@@ -16,7 +16,7 @@ public class ClientMsgThread extends Thread{
 	BufferedReader buffr;//듣고
 	BufferedWriter buffw;//말하기
 	boolean flag=true;
-	
+
 	public ClientMsgThread(Socket socket, ChatClient chatClient) {
 		this.socket=socket;
 		this.chatClient=chatClient;
