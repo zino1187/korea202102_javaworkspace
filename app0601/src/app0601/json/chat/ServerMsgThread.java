@@ -34,13 +34,25 @@ public class ServerMsgThread extends Thread{
 		try {
 			msg= buffr.readLine();
 			
-			//broadcasting !!!
-			for(int i=0;i<chatServer.clientList.size();i++) {
-				ServerMsgThread msgThread=chatServer.clientList.get(i);
-				msgThread.send(msg);
+			//예전기능과는 틀리게, 클라이언트가 좀더 복잡한 형태의 데이터 구조를 전송했기 때문에
+			//서버는 모든 메시지가 대화를 의도한게 아니라는것을 알고, 데이터를 분석해야 한다!!
+			//이때 클라이언트가 보낸 데이터가 JSON이면, JSON파싱을 해야 하고, 클라이언트가 보낸 데이터구조가
+			//xml이면 xml 파싱을 통해 해석하면 된다!!
+			
+			if(true) { //로그인 정보가 전송되어 오면
+				
+			}else if(false) { //대화의 메시지가 전송되어 오면 
+				//대화일때 broadcasting !!!
+				for(int i=0;i<chatServer.clientList.size();i++) {
+					ServerMsgThread msgThread=chatServer.clientList.get(i);
+					msgThread.send(msg);
+				}
+				chatServer.area.append(msg+"\n");//area에 로그 남기기 
+			}else if(false) { //이모티몬을 전송한 거라면
+			}else if(false) {//친구추가요청이라면
+			}else if(false) { //선물보내기 라면...
 			}
 			
-			chatServer.area.append(msg+"\n");//area에 로그 남기기 
 		} catch (IOException e) {
 			//e.printStackTrace();
 			flag=false; //쓰레드 dead 상태로 두기 
