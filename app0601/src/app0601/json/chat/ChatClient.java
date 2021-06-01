@@ -3,6 +3,8 @@ package app0601.json.chat;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -62,15 +64,37 @@ public class ChatClient extends JFrame{
 		//윈도우창 닫을때 해야할 작업(쓰레드 종료: 즉 청취 종료) 
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				
+				msgThread.flag=false; //쓰레드 종료
+				System.exit(0); //현재 프로세스 종료
 			}
 		});
 		
+		//메시지 입력 엔터처리 
+		t_input.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) { //엔터치면..
+					sendMsg();	
+				}
+			}
+		});
+		
+		//전송 버튼 누르면..
+		bt_send.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				sendMsg();
+			}
+		});
 		
 		//보이기 
 		setVisible(true);
 		setBounds(0, 100, 300, 400);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+	
+	public void sendMsg() {
+		String msg =t_input.getText();
+		msgThread.send(msg); //서버에 메시지 전송~(출력)
+		t_input.setText(""); //초기화
 	}
 	
 	public void connect() {
@@ -80,8 +104,7 @@ public class ChatClient extends JFrame{
 			socket = new Socket(ip, port); //접속!!!!!!!
 			//클라이언트 측의 대화용 쓰레드 생성 
 			msgThread = new ClientMsgThread(socket, this);
-			
-			
+			msgThread.start(); //서버의 메시지 실시간 청취 시작
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

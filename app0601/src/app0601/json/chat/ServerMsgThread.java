@@ -33,7 +33,13 @@ public class ServerMsgThread extends Thread{
 		String msg=null;
 		try {
 			msg= buffr.readLine();
-			send(msg);
+			
+			//broadcasting !!!
+			for(int i=0;i<chatServer.clientList.size();i++) {
+				ServerMsgThread msgThread=chatServer.clientList.get(i);
+				msgThread.send(msg);
+			}
+			
 			chatServer.area.append(msg+"\n");//area에 로그 남기기 
 		} catch (IOException e) {
 			//e.printStackTrace();

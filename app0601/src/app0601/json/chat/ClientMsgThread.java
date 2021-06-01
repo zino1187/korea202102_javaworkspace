@@ -56,6 +56,21 @@ public class ClientMsgThread extends Thread{
 		while(flag) {
 			listen();
 		}
+		//쓰레드 종료에 따른, 스트림 닫기 
+		if(buffw!=null) {
+			try {
+				buffw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if(buffr!=null) {
+			try {
+				buffr.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 }
