@@ -77,8 +77,6 @@ public class MountainApp extends JFrame{
 			SAXParser saxParser=factory.newSAXParser();
 			
 			saxParser.parse(is, handler = new MountainHandler()); //파싱시작!!!!
-			
-			
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
