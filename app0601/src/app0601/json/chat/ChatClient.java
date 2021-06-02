@@ -113,7 +113,7 @@ public class ChatClient extends JFrame{
 	public void sendAllData() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		sb.append("\"cmd\" : \"login\",");
+		sb.append("\"cmd\" : \"login\",");  //cmd 요청명령을 구분하는 값!!
 		sb.append("\"member\":{");
 		sb.append("\"user_id\" :  \""+member.getUser_id()+"\",");
 		sb.append("\"name\" :\""+member.getName()+"\",");
@@ -133,7 +133,7 @@ public class ChatClient extends JFrame{
 	public void connect() {
 		//String ip=t_ip.getText();
 		//int port=Integer.parseInt(t_port.getText());
-		String ip="192.168.55.227";
+		String ip="172.30.1.20";
 		int port=7777;
 		
 		try {
