@@ -54,7 +54,7 @@ public class GamePanel extends JPanel{
 	
 	//주인공 생성
 	public void createHero() {
-		hero = new Hero(this,"plane2.png",100,200,80,45,1,0);
+		hero = new Hero(this,"img/plane.png",100,200,80,45,1,0);
 	}
 	
 	//적군생성 

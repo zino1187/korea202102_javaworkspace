@@ -4,10 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.util.Calendar;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -28,6 +31,8 @@ public class Diary extends JFrame{
 	//원하신 시점에 날짜 박스를 제어하기 위해서, 각 날짜 박스객체들을 배열에 담아놓자!!
 	DateBox[] boxArray=new DateBox[dayArray.length*6];
 	Calendar currentDate; //현재 날짜 정보를 가진 객체
+	
+	//기념일에 대한 데이터를 구성...
 	
 	public Diary() {
 		p_north = new JPanel();
@@ -146,10 +151,17 @@ public class Diary extends JFrame{
 				if(n <=getLastDate(yy, mm+1)) {
 					boxArray[i].day=Integer.toString(n);
 					boxArray[i].repaint(); //텍스트를 다시 그리자!! 즉 그래픽 갱신!!
+					
+					//아이콘 올려놓기!!
+					if(n==11) {
+						Image image = getIcon("cake.png");
+						boxArray[i].img=image;
+					}
+					
+					
 					n++;
 				}
 			}
-			
 		}
 	}
 	
@@ -185,6 +197,13 @@ public class Diary extends JFrame{
 		removeString();//기존 날짜 지우기
 		setDateTitle(); //달력 제목 바꾸기 
 		printDate(); //날짜 출력하기
+	}
+	
+	//이 메서드를 호출하면, 적절한 이미지를 반환해주게 처리!!
+	public Image getIcon(String filename) {
+		URL url = this.getClass().getClassLoader().getResource(filename);
+		ImageIcon icon=new ImageIcon(url);
+		return icon.getImage(); //이미지로 변환하여 반환
 	}
 	
 	

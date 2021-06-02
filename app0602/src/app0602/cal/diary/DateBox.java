@@ -3,6 +3,7 @@ package app0602.cal.diary;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 
 import javax.swing.JPanel;
 
@@ -12,6 +13,7 @@ public class DateBox extends JPanel{
 	int height;
 	String day;
 	Color color; //배경색 
+	Image img;
 	
 	public DateBox(String day,Color color, int width, int height) {
 		this.day=day;
@@ -27,5 +29,10 @@ public class DateBox extends JPanel{
 
 		g.setColor(Color.BLACK);//물감을 흰색으로 교체
 		g.drawString(day, 10, 20);
+		
+		//조건에 따라 아이콘을 그리고, 안그리고를 결정짓게 하자!!
+		if(img!=null) {//즉 null 이 아닌 경우 그리자!!!
+			g.drawImage(img, 0, 40, 50, 30, this);
+		}
 	}
 }
