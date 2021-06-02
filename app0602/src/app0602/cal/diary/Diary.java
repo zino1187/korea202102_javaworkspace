@@ -34,6 +34,7 @@ public class Diary extends JFrame{
 	
 	//기념일에 대한 데이터를 구성...
 	
+	
 	public Diary() {
 		p_north = new JPanel();
 		bt_prev = new JButton("이전");
@@ -153,12 +154,11 @@ public class Diary extends JFrame{
 					boxArray[i].repaint(); //텍스트를 다시 그리자!! 즉 그래픽 갱신!!
 					
 					//아이콘 올려놓기!!
-					if(n==11) {
-						Image image = getIcon("cake.png");
-						boxArray[i].img=image;
+					if(n==5) {
+						boxArray[i].img=getIcon("graduation.png");
+					}else if(n==11) {
+						boxArray[i].img=getIcon("cake.png");
 					}
-					
-					
 					n++;
 				}
 			}
