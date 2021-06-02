@@ -38,7 +38,8 @@ public class Diary extends JFrame{
 		createDate();//날짜생성
 		
 		//테스트
-		System.out.println(getFirstDayOfMonth(2021, 1-1)); //1월 
+		//System.out.println(getFirstDayOfMonth(2021, 2)); //2월 
+		//System.out.println((2)+"월은 "+getLastDate(2021, 2) +"일까지 입니다"); //2월이 몇일까지 있나? 
 		
 		//이벤트 
 		
@@ -69,6 +70,7 @@ public class Diary extends JFrame{
 	//해당 월의 시작 요일 구하기!!
 	//개발원리: 날짜 객체를 해당월의 1일로 조작한 후, 요일을 구한다!!
 	//단 해당월과 연도는 매개변수로 호출자가 그 값을 결정할 수 있도록 메서드 정의하자
+	//호출방법:  2월에 대한 정보를 구할 경우  getFirstDayOfMonth(2021, 2)
 	public int getFirstDayOfMonth(int yy, int mm) {
 		Calendar cal=Calendar.getInstance(); //날짜 객체 생성 
 		cal.set(yy,mm, 1);//해당년도와 월의 1을로 조작!!
@@ -76,10 +78,11 @@ public class Diary extends JFrame{
 	}
 	
 	//해당월이 몇일까지 있는지 구하기!!  8월 31일, 9월 30일
-	public int getLastDate() {
+	//호출방법:  2월에 대한 정보를 구할 경우  getLastDate(2021, 2)
+	public int getLastDate(int yy, int mm) {
 		Calendar cal = Calendar.getInstance();
-		
-		return 0;
+		cal.set(yy,mm, 0); //0일이란 존재하지 않는 날짜이므로, 이전 월의 마지막날을 의미한다!!!
+		return cal.get(Calendar.DATE);
 	}
 	
 	public static void main(String[] args) {
