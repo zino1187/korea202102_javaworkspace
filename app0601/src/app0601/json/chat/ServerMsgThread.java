@@ -20,6 +20,10 @@ public class ServerMsgThread extends Thread{
 	BufferedWriter buffw;//말하기
 	boolean flag=true;
 	
+	//회원정보를 보관해놓자!!
+	Member member;
+	
+	
 	public ServerMsgThread(Socket socket, ChatServer chatServer) {
 		this.socket=socket;
 		this.chatServer=chatServer;
@@ -51,14 +55,20 @@ public class ServerMsgThread extends Thread{
 				String cmd = (String)json.get("cmd");
 				
 				if(cmd.equals("login")) { //로그인 정보가 전송되어 오면
-					System.out.println("클라이언트가 로그인 정보를 보냈습니다 ");
+					chatServer.area.append("클라이언트가 로그인 정보를 보냈습니다\n");
+					member = new Member(); //empty 상태의 VO 생성  
+					
+					JSONObject obj=(JSONObject)json.get("member");
+					member.setUser_id((String)obj.get("user_id")); //id 처리 
+					member.setName((String)obj.get("name")); //name 처리 
+					member.setRegdate((String)obj.get("regdate"));//regdate 처리 
 				}else if(cmd.equals("chat")) { //대화의 메시지가 전송되어 오면 
 					//대화일때 broadcasting !!!
 					for(int i=0;i<chatServer.clientList.size();i++) {
 						ServerMsgThread msgThread=chatServer.clientList.get(i);
 						msgThread.send(msg);
 					}
-					chatServer.area.append(msg+"\n");//area에 로그 남기기 
+					chatServer.area.append(member.getUser_id()+"의 말:"+msg+"\n");//area에 로그 남기기 
 				}else if(cmd.equals("emo")) { //이모티몬을 전송한 거라면
 				}else if(cmd.equals("add_friend")) {//친구추가요청이라면
 				}else if(cmd.equals("present")) { //선물보내기 라면...
