@@ -18,6 +18,10 @@ public class Diary extends JFrame{
 	JPanel p_center; //날짜 박스 처리할 영역
 	String[] dayArray= {"Sun","Mon","Tue","Wed","Thur","Fri","Sat"};
 	
+	//원하신 시점에 날짜 박스를 제어하기 위해서, 각 날짜 박스객체들을 배열에 담아놓자!!
+	DateBox[] boxArray=new DateBox[dayArray.length*6];
+	Calendar currentDate; //현재 날짜 정보를 가진 객체
+	
 	public Diary() {
 		p_north = new JPanel();
 		bt_prev = new JButton("이전");
@@ -34,12 +38,14 @@ public class Diary extends JFrame{
 		add(p_north, BorderLayout.NORTH);
 		add(p_center);
 		
+		getCurrentDate(); //현재날짜 객체 구하기
 		createDay(); //요일생성
 		createDate();//날짜생성
+		printDate();//각 박스에 날짜 출력
 		
 		//테스트
-		//System.out.println(getFirstDayOfMonth(2021, 2)); //2월 
-		//System.out.println((2)+"월은 "+getLastDate(2021, 2) +"일까지 입니다"); //2월이 몇일까지 있나? 
+		System.out.println(getFirstDayOfMonth(2021, 6-1)); //6월 
+		System.out.println((6)+"월은 "+getLastDate(2021, 6) +"일까지 입니다"); //6월이 몇일까지 있나? 
 		
 		//이벤트 
 		
@@ -47,8 +53,12 @@ public class Diary extends JFrame{
 		setVisible(true);
 		setSize(780, 780);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
-		
+	}
+	
+	//현재날짜 구하기(프로그램 가동과 동시에 사용될 디폴트 날짜 객체) 
+	public Calendar getCurrentDate() {
+		currentDate = Calendar.getInstance();
+		return currentDate;
 	}
 	
 	//요일 생성 
@@ -62,8 +72,11 @@ public class Diary extends JFrame{
 	//날짜 생성 
 	public void createDate() {
 		for(int i=0;i<dayArray.length*6;i++) {
-			DateBox dateBox = new DateBox(Integer.toString(i), Color.orange, 100,100);
+			DateBox dateBox = new DateBox("", Color.orange, 100,100);
 			p_center.add(dateBox); //센터에 부착!!
+			
+			//배열에 담아놓아야, 추후 필요할때 사용이 가능!!
+			boxArray[i]=dateBox;
 		}
 	}
 	
@@ -83,6 +96,24 @@ public class Diary extends JFrame{
 		Calendar cal = Calendar.getInstance();
 		cal.set(yy,mm, 0); //0일이란 존재하지 않는 날짜이므로, 이전 월의 마지막날을 의미한다!!!
 		return cal.get(Calendar.DATE);
+	}
+	
+	//Box에 날짜 출력!!!
+	public void printDate() {
+		int n=1;
+		
+		for(int i=0;i<31;i++) {
+			//날짜는 아무때나 찍는게 아니라, 해당 월의 시작 요일 이상일때만 찍자!!
+			int yy=currentDate.get(Calendar.YEAR);
+			int mm=currentDate.get(Calendar.MONTH);
+			
+			if(i>=getFirstDayOfMonth(yy,mm) ) {
+				boxArray[i].day=Integer.toString(n);
+				boxArray[i].repaint(); //텍스트를 다시 그리자!! 즉 그래픽 갱신!!
+				n++;
+			}
+			
+		}
 	}
 	
 	public static void main(String[] args) {
