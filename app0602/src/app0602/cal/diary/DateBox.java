@@ -25,7 +25,7 @@ public class DateBox extends JPanel{
 		g.setColor(color);//그래픽 객체의 물감색을 결정한다
 		g.fillRect(0, 0, width, height);//채워진 사각형
 
-		g.setColor(Color.WHITE);//물감을 흰색으로 교체
+		g.setColor(Color.BLACK);//물감을 흰색으로 교체
 		g.drawString(day, 10, 20);
 	}
 }

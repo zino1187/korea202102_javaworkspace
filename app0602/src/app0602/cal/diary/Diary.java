@@ -54,8 +54,8 @@ public class Diary extends JFrame{
 		printDate();//각 박스에 날짜 출력
 		
 		//테스트
-		System.out.println(getFirstDayOfMonth(2021, 6-1)); //6월 
-		System.out.println((6)+"월은 "+getLastDate(2021, 6) +"일까지 입니다"); //6월이 몇일까지 있나? 
+		//System.out.println(getFirstDayOfMonth(2021, 6-1)); //6월 
+		//System.out.println((6)+"월은 "+getLastDate(2021, 6) +"일까지 입니다"); //6월이 몇일까지 있나? 
 		
 		//이벤트 
 		bt_next.addActionListener(new ActionListener() {
@@ -112,14 +112,17 @@ public class Diary extends JFrame{
 	public int getFirstDayOfMonth(int yy, int mm) {
 		Calendar cal=Calendar.getInstance(); //날짜 객체 생성 
 		cal.set(yy,mm, 1);//해당년도와 월의 1을로 조작!!
+		
 		return cal.get(Calendar.DAY_OF_WEEK)-1; //주의 js 에서의 습관이 있기에 요일은 0부터 시작하는 걸로..		
 	}
 	
 	//해당월이 몇일까지 있는지 구하기!!  8월 31일, 9월 30일
 	//호출방법:  2월에 대한 정보를 구할 경우  getLastDate(2021, 2)
-	public int getLastDate(int yy, int mm) {
+	public int getLastDate(int yy, int mm) { 
 		Calendar cal = Calendar.getInstance();
 		cal.set(yy,mm, 0); //0일이란 존재하지 않는 날짜이므로, 이전 월의 마지막날을 의미한다!!!
+		
+		System.out.println(yy+"년 "+mm+"월은 "+cal.get(Calendar.DATE)+"일까지 있네요");
 		return cal.get(Calendar.DATE);
 	}
 	
@@ -134,7 +137,7 @@ public class Diary extends JFrame{
 			
 			if(i>=getFirstDayOfMonth(yy,mm) ) {
 				//각월의 총 날수까지만 출력되게..
-				if(n <getLastDate(yy, mm)) {
+				if(n <=getLastDate(yy, mm+1)) {
 					boxArray[i].day=Integer.toString(n);
 					boxArray[i].repaint(); //텍스트를 다시 그리자!! 즉 그래픽 갱신!!
 					n++;
