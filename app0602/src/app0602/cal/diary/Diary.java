@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Calendar;
 
 import javax.swing.JButton;
@@ -56,6 +58,12 @@ public class Diary extends JFrame{
 		System.out.println((6)+"월은 "+getLastDate(2021, 6) +"일까지 입니다"); //6월이 몇일까지 있나? 
 		
 		//이벤트 
+		bt_next.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				nextMonth();
+			}
+		});
+		
 		
 		//보여주기
 		setVisible(true);
@@ -135,6 +143,30 @@ public class Diary extends JFrame{
 			
 		}
 	}
+	
+	//기존의 Box에 그려진 스트링 모두 지우기 
+	public void removeString() {
+		for(int i=0;i<boxArray.length;i++) {
+			boxArray[i].day="";
+			boxArray[i].repaint(); //그림 다시 갱신
+		}
+	}
+	
+	
+	//이전월 구하기
+	
+	//다음 월 구하기 
+	public void nextMonth() {
+		//현재 날짜 객체에 월을+1한다, 기왕이면 날짜는 1일로...
+		int yy=currentDate.get(Calendar.YEAR); //현재 연도 
+		int mm = currentDate.get(Calendar.MONTH); //현재 월 
+		currentDate.set(yy, mm+1,1); //yy, mm, dd
+		
+		removeString();//기존 날짜 지우기
+		setDateTitle(); //달력 제목 바꾸기 
+		printDate(); //날짜 출력하기
+	}
+	
 	
 	public static void main(String[] args) {
 		new Diary();
