@@ -2,12 +2,17 @@ package app0602.cal.diary;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import app0602.common.StringManager;
 
 public class Diary extends JFrame{
 	JPanel p_north;
@@ -25,11 +30,13 @@ public class Diary extends JFrame{
 	public Diary() {
 		p_north = new JPanel();
 		bt_prev = new JButton("이전");
-		la_title = new JLabel("연도 월 올 예정");
+		la_title = new JLabel("연도 월 올 예정", SwingConstants.CENTER);
 		bt_next = new JButton("다음");
 		p_center = new JPanel();
 		
 		//스타일
+		la_title.setFont(new Font("Arial-Black", Font.BOLD, 30));
+		la_title.setPreferredSize(new Dimension(500, 30));
 		
 		//조립 
 		p_north.add(bt_prev);
@@ -39,6 +46,7 @@ public class Diary extends JFrame{
 		add(p_center);
 		
 		getCurrentDate(); //현재날짜 객체 구하기
+		setDateTitle();//달력 제목 달기
 		createDay(); //요일생성
 		createDate();//날짜생성
 		printDate();//각 박스에 날짜 출력
@@ -59,6 +67,15 @@ public class Diary extends JFrame{
 	public Calendar getCurrentDate() {
 		currentDate = Calendar.getInstance();
 		return currentDate;
+	}
+	
+	//달력의 제목 즉, 날짜 출력 
+	public void setDateTitle() {
+		int yy = currentDate.get(Calendar.YEAR);
+		int mm = currentDate.get(Calendar.MONTH);
+		
+		//제목에 출력
+		la_title.setText(yy+"-"+StringManager.getZeroString(mm+1));
 	}
 	
 	//요일 생성 
@@ -102,15 +119,18 @@ public class Diary extends JFrame{
 	public void printDate() {
 		int n=1;
 		
-		for(int i=0;i<31;i++) {
+		for(int i=0;i<boxArray.length;i++) {
 			//날짜는 아무때나 찍는게 아니라, 해당 월의 시작 요일 이상일때만 찍자!!
 			int yy=currentDate.get(Calendar.YEAR);
 			int mm=currentDate.get(Calendar.MONTH);
 			
 			if(i>=getFirstDayOfMonth(yy,mm) ) {
-				boxArray[i].day=Integer.toString(n);
-				boxArray[i].repaint(); //텍스트를 다시 그리자!! 즉 그래픽 갱신!!
-				n++;
+				//각월의 총 날수까지만 출력되게..
+				if(n <getLastDate(yy, mm)) {
+					boxArray[i].day=Integer.toString(n);
+					boxArray[i].repaint(); //텍스트를 다시 그리자!! 즉 그래픽 갱신!!
+					n++;
+				}
 			}
 			
 		}
