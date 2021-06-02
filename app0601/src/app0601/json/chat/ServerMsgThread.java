@@ -68,11 +68,13 @@ public class ServerMsgThread extends Thread{
 					//대화일때 broadcasting !!!
 					for(int i=0;i<chatServer.clientList.size();i++) {
 						ServerMsgThread msgThread=chatServer.clientList.get(i);
-						msgThread.send(message);
+						msgThread.send(member.getUser_id()+"의 말:"+message);
 					}
 					chatServer.area.append(member.getUser_id()+"의 말:"+message+"\n");//area에 로그 남기기 
 				}else if(cmd.equals("emo")) { //이모티몬을 전송한 거라면
+					
 				}else if(cmd.equals("add_friend")) {//친구추가요청이라면
+					
 				}else if(cmd.equals("present")) { //선물보내기 라면...
 				}
 				
