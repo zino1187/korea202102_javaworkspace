@@ -1,6 +1,7 @@
 package app0602.cal.diary;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,6 +15,7 @@ public class Diary extends JFrame{
 	JButton bt_next;
 	
 	JPanel p_center; //날짜 박스 처리할 영역
+	String[] dayArray= {"Sun","Mon","Tue","Wed","Thur","Fri","Sat"};
 	
 	public Diary() {
 		p_north = new JPanel();
@@ -45,7 +47,7 @@ public class Diary extends JFrame{
 	//요일 생성 
 	public void createDay() {
 		for(int i=0;i<7;i++) {
-			DateBox dayBox=new DateBox();
+			DateBox dayBox=new DateBox(dayArray[i],Color.GRAY,100,70);
 			p_center.add(dayBox); //센터에 부착!!
 		}
 	}
