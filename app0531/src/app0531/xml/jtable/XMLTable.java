@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.xml.parsers.ParserConfigurationException;
