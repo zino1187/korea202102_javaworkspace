@@ -19,6 +19,7 @@ public class PetsHandler extends DefaultHandler{
 	boolean isAge;
 	
 	DefaultMutableTreeNode root; //최상위 노드
+	DefaultMutableTreeNode petNode; //최상위 노드
 	
 	public void startElement(String uri, String localName, String tag, Attributes attributes) throws SAXException {
 		if(tag.equals("pets")) {
@@ -29,7 +30,7 @@ public class PetsHandler extends DefaultHandler{
 		}else if(tag.equals("pet")) {
 			isPet=true;
 			pet = new Pet();
-			DefaultMutableTreeNode pet = new DefaultMutableTreeNode(tag);
+			petNode = new DefaultMutableTreeNode(tag);
 			
 		}else if(tag.equals("type")) {
 			isType=true;
@@ -46,12 +47,15 @@ public class PetsHandler extends DefaultHandler{
 		 if(isType) {
 			 pet.setType(data);
 			 DefaultMutableTreeNode type = new DefaultMutableTreeNode(data);
+			 petNode.add(type);
 		 }else if(isName) {
 			 pet.setName(data);
 			 DefaultMutableTreeNode name = new DefaultMutableTreeNode(data);
+			 petNode.add(name);
 		 }else if(isAge) {
 			 pet.setAge( Integer.parseInt(data));
 			 DefaultMutableTreeNode age = new DefaultMutableTreeNode(data);
+			 petNode.add(age);
 		 }
 	}
 	
@@ -65,6 +69,7 @@ public class PetsHandler extends DefaultHandler{
 		}else if(tag.equals("pet")) {
 			isPet=false;
 			petList.add(pet);//완성된 하나의 반려동물 VO의 인스턴스를 ArrayList에 추가 
+			root.add(petNode);
 		}else if(tag.equals("pets")) {
 			isPets=true;
 		}
