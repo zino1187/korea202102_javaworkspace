@@ -2,6 +2,8 @@ package app0604.tree.xml;
 
 import java.util.ArrayList;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -16,13 +18,19 @@ public class PetsHandler extends DefaultHandler{
 	boolean isName;
 	boolean isAge;
 	
+	DefaultMutableTreeNode root; //최상위 노드
+	
 	public void startElement(String uri, String localName, String tag, Attributes attributes) throws SAXException {
 		if(tag.equals("pets")) {
 			isPets=true;
 			petList= new ArrayList<Pet>();
+			root = new DefaultMutableTreeNode(tag);
+			
 		}else if(tag.equals("pet")) {
 			isPet=true;
 			pet = new Pet();
+			DefaultMutableTreeNode pet = new DefaultMutableTreeNode(tag);
+			
 		}else if(tag.equals("type")) {
 			isType=true;
 		}else if(tag.equals("name")) {
@@ -37,10 +45,13 @@ public class PetsHandler extends DefaultHandler{
 		
 		 if(isType) {
 			 pet.setType(data);
+			 DefaultMutableTreeNode type = new DefaultMutableTreeNode(data);
 		 }else if(isName) {
 			 pet.setName(data);
+			 DefaultMutableTreeNode name = new DefaultMutableTreeNode(data);
 		 }else if(isAge) {
 			 pet.setAge( Integer.parseInt(data));
+			 DefaultMutableTreeNode age = new DefaultMutableTreeNode(data);
 		 }
 	}
 	
